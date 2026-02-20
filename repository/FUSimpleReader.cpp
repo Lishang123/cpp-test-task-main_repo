@@ -184,6 +184,10 @@ bool Reader::charactersChar( const char *, const char *, const char *, const cha
     }
     else if( currentElement == Element::source )
     {
+        if (!m_currentFunction) {
+            utils::fatal("lm::source_before_id",
+                         fmt::format("Found <Source> before <ID> while parsing {}.", m_repository.c_str()));
+        }
         m_currentFunction->source.set( chars );
     }
     return true;
