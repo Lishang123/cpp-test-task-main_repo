@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Functions xmlns:xmi="http://schema.omg.org/spec/XMI/2.1">
+   <Function>
+      <ID>stringLength...f2128203875h-1761480648.5_1</ID>
+      <Source>0.1</Source>
+   </Function>
+   <Function>
+      <ID>stringLength...f2128203875h-1761480648.6_1</ID>
+      <Source>1.1</Source>
+   </Function>
+   <Function>
+      <ID>stringLength...RIT_f2128203875h-1761480648.6_1</ID>
+      <Source>1.1</Source>
+   </Function>
+   <Function>
+      <ID>stringLength...f2128203875h-1761480648.7_1</ID>
+      <Source>0.1</Source>
+   </Function>
+</Functions>

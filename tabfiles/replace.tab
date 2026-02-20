@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Functions xmlns:xmi="http://schema.omg.org/spec/XMI/2.1">
+   <Function>
+      <ID>replace...f_653960456h1121717696.7_1</ID>
+      <Source>0</Source>
+      <Pattern>value...f_653960456h1121717696.8_1</Pattern>
+      <Replacement>value...f_653960456h1121717696.9_1</Replacement>
+   </Function>
+   <Function>
+      <ID>replace...f_653960456h771489301.7_1</ID>
+      <Source>0</Source>
+      <Pattern>value...f_653960456h771489301.8_1</Pattern>
+      <Replacement>value...f_653960456h771489301.9_1</Replacement>
+   </Function>
+</Functions>
