@@ -109,3 +109,48 @@ TEST_CASE("FUSimpleReader rejects unknown elements", "[repository][simple]") {
         CHECK(std::string(msg.getDescription()).starts_with("Found unexpected element 'FunctionA' while parsing"));
     }
 }
+
+TEST_CASE("FUSimpleReader rejects unexpected element while expecting Functions", "[repository][simple]") {
+    ensure_xerces();
+
+    const char* xml =
+        R"(<?xml version="1.0" encoding="UTF-8"?>
+           <Function>
+             <Function><ID>stringLength...f2128203875h-1761480648.5_1</ID><Source>0.1</Source></Function>
+             <Function><ID>stringLength...f2128203875h-1761480648.6_1</ID><Source>1.1</Source></Function>
+           </Function>)";
+
+    TY_Blob blob(xml, std::strlen(xml));
+
+    try {
+        (void)spl::readRepo(blob, "unexpected-elem-test");
+        FAIL("Expected M_SystemMessage to be thrown");
+    } catch (const M_SystemMessage& msg) {
+        std::cout << msg.getDescription() << std::endl;
+        CHECK(std::string(msg.getCode()) == "lm::unexpected_element");
+        CHECK(std::string(msg.getDescription()).starts_with("Expected 'Functions' while parsing "));
+    }
+}
+
+TEST_CASE("FUSimpleReader rejects unexpected elements while expecting Function", "[repository][simple]") {
+    ensure_xerces();
+
+    const char* xml =
+        R"(<?xml version="1.0" encoding="UTF-8"?>
+           <Functions>
+             <Functions><ID>stringLength...f2128203875h-1761480648.5_1</ID><Source>0.1</Source></Functions>
+             <Functions><ID>stringLength...f2128203875h-1761480648.6_1</ID><Source>1.1</Source></Functions>
+           </Functions>)";
+
+    TY_Blob blob(xml, std::strlen(xml));
+
+    try {
+        (void)spl::readRepo(blob, "unexpected-elem-test");
+        FAIL("Expected M_SystemMessage to be thrown");
+    } catch (const M_SystemMessage& msg) {
+        std::cout << msg.getDescription() << std::endl;
+        CHECK(std::string(msg.getCode()) == "lm::unexpected_element");
+        CHECK(std::string(msg.getDescription()).starts_with("Expected 'Function' while parsing "));
+    }
+}
+
