@@ -151,6 +151,10 @@ bool Reader::startElementChar( const char *, const char *localName, const char *
         {
             utils::unexpectedChild(  localName, m_repository.c_str() );
         }
+        case Element::unknown:
+            utils::fatal("lm::internal_error",
+                         fmt::format("Invalid parser state while parsing {}.",
+                                     m_repository.c_str()));
     }
     return true;
 }
