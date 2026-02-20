@@ -15,6 +15,10 @@ M_SystemMessage sysMsg( std::string_view code, std::string_view message );
 [[noreturn]] void error( std::string_view code, std::string_view msg );
 
 [[noreturn]]
+void unexpectedElement( std::string_view got, std::initializer_list<std::string_view> wanted_list,
+                        std::string_view repo );
+
+[[noreturn]]
 void unexpectedElement( std::string_view got, std::string_view wanted,
                         std::string_view repo );
 [[noreturn]]

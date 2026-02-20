@@ -45,6 +45,32 @@ void unexpected( std::string msg )
 
 } // namespace
 
+std::string listToString(std::initializer_list<std::string_view> list) {
+    std::string res {"["};
+    bool first = true;
+    for (auto wanted : list) {
+        if (!first)
+            res += ", ";
+        res += fmt::format("'{}'", wanted);
+        first = false;
+    }
+    return res;
+}
+
+void unexpectedElement( std::string_view got, std::initializer_list<std::string_view> wanted_list,
+                            std::string_view repo )
+{
+    std::string expected;
+
+    if (wanted_list.size() == 1) {
+        expected = fmt::format("'{}'", *wanted_list.begin());
+    } else {
+        expected = "one of " + listToString( wanted_list ) + "]";
+    }
+    unexpected( fmt::format( "Expected {} while parsing {}, got '{}'.",
+                             expected, repo, got ) ) ;
+}
+
 void unexpectedElement( std::string_view got, std::string_view wanted,
                         std::string_view repo )
 {
