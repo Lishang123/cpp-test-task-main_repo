@@ -201,3 +201,26 @@ TEST_CASE("FUSimpleReader rejects unexpected child of ID/Source", "[repository][
         CHECK(std::string(msg.getDescription()).starts_with("Found unexpected child element 'id'"));
     }
 }
+
+
+TEST_CASE("FUSimpleReader: <Source> before <ID>", "[repository][simple]") {
+    ensure_xerces();
+
+    const char* xml =
+        R"(<?xml version="1.0" encoding="UTF-8"?>
+           <Functions>
+             <Function>
+                <source>0.1</source>
+                <id>stringLength...f2128203875h-1761480648.5_1</id>
+            </Function>
+           </Functions>)";
+
+    TY_Blob blob(xml, std::strlen(xml));
+
+    try {
+        (void)spl::readRepo(blob, "source-before-id-test");
+        FAIL("Expected M_SystemMessage to be thrown");
+    } catch (const M_SystemMessage& msg) {
+        CHECK(std::string(msg.getCode()) == "lm::source_before_id");
+    }
+}
