@@ -70,6 +70,29 @@ TEST_CASE("FUSimpleReader parses tabfiles/simple.tab", "[repository][simple]") {
     CHECK(std::string(functions[3].source.c_str()) == "0.1");
 }
 
+TEST_CASE("FUSimpleReader parses simple doc", "[repository][simple]") {
+    ensure_xerces();
+
+    const char* xml =
+        R"(<?xml version="1.0" encoding="UTF-8"?>
+           <Functions>
+             <FunctioN>
+                <ID>stringLength...f2128203875h-1761480648.5_1</ID>
+                <Source>0.1</Source>
+            </FunctioN>
+           </Functions>)";
+
+    TY_Blob blob(xml, std::strlen(xml));
+
+    auto functions = spl::readRepo(blob, "test-simple-doc");
+
+    REQUIRE(functions.size() == 1);
+
+    CHECK(std::string(functions[0].id.c_str())     == "stringLength...f2128203875h-1761480648.5_1");
+    CHECK(std::string(functions[0].source.c_str()) == "0.1");
+}
+
+
 TEST_CASE("FUSimpleReader rejects duplicated function IDs", "[repository][simple]") {
     ensure_xerces();
 
@@ -223,4 +246,28 @@ TEST_CASE("FUSimpleReader: <Source> before <ID>", "[repository][simple]") {
     } catch (const M_SystemMessage& msg) {
         CHECK(std::string(msg.getCode()) == "lm::source_before_id");
     }
+}
+
+TEST_CASE("FUSimpleReader parses simple doc without <source>", "[repository][simple]") {
+    ensure_xerces();
+
+    const char* xml =
+        R"(<?xml version="1.0" encoding="UTF-8"?>
+           <Functions>
+             <Function>
+                <ID>stringLength...f2128203875h-1761480648.5_1</ID>
+            </Function>
+            <Function>
+                <ID>stringLength...f2128203875h-1761480648.6_1</ID>
+            </Function>
+           </Functions>)";
+
+    TY_Blob blob(xml, std::strlen(xml));
+
+    auto functions = spl::readRepo(blob, "test-simple-doc-no-source");
+
+    REQUIRE(functions.size() == 2);
+
+    CHECK(std::string(functions[0].id.c_str()) == "stringLength...f2128203875h-1761480648.5_1");
+    CHECK(std::string(functions[1].id.c_str()) == "stringLength...f2128203875h-1761480648.6_1");
 }
