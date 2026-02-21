@@ -311,3 +311,25 @@ TEST_CASE("FUSimpleReader preserves whitespaces", "[repository][simple]") {
     REQUIRE(functions.size() == 1);
     CHECK_FALSE(std::string(functions[0].id.c_str()) == "dup");
 }
+
+TEST_CASE("FUSimpleReader validates closing tags", "[repository][simple]") {
+    ensure_xerces();
+
+    const char* xml =
+        R"(<?xml version="1.0" encoding="UTF-8"?>
+           <Functions>
+             <Function>
+                <ID>dup
+             </Function>
+           </Functions>)";
+
+    TY_Blob blob(xml, std::strlen(xml));
+    try {
+        auto functions = spl::readRepo(blob, "test-validates-closing-tags");
+        FAIL("Expected M_SystemMessage to be thrown");
+    }
+    catch (const M_SystemMessage& msg) {
+        CHECK(std::string(msg.getCode()) == "XMLLM_XR_REPOSITORYPARSER_NATIVE_FATAL_PARSE_ERROR");
+        CHECK(std::string(msg.getDescription()).find("expected end of tag 'ID'") != std::string::npos);
+    }
+}
