@@ -135,7 +135,9 @@ bool Reader::startElementChar( const char *, const char *localName, const char *
                 currentElement != Element::pattern &&
                 currentElement != Element::replacement)
             {
-                utils::unexpectedElement(  localName, m_repository.c_str() );
+                utils::unexpectedElement(  localName,
+                    {IDElement, sourceElement, patternElement, replacementElement},
+                    m_repository.c_str() );
             }
             break;
         }
