@@ -90,8 +90,6 @@ Reader::Element toElement( std::string_view name )
 Functions Reader::read(const TY_Blob &data, std::string_view repo) &&
 {
     m_repository.set( repo );
-    m_functions.clear();
-    m_elementStack.clear();
     m_elementStack.push_back( Element::document );
 
     parseBlob( &data );

@@ -88,9 +88,6 @@ Functions Reader::read( const TY_Blob &data, std::string_view repo ) &&
 {
     // stores repo label for diagnostics
     m_repository.set( repo );
-    // resets internal state
-    m_functions.clear();
-    m_elementStack.clear();
     // seeds the stack with document
     m_elementStack.push_back( Element::document );
 
