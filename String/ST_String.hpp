@@ -43,7 +43,7 @@ class ST_String
 		  * @param s New value.
 		  */
 		void set( const char* s);
-		void set( std::string_view str );
+		void set( std::string_view sv );
 		void consume( char* s);
 		/** Set new value.
 		  * @param s New value.

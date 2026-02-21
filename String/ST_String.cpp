@@ -125,9 +125,9 @@ void ST_String::set( const char* s)
 	set( s, npos);
 }
 
-void ST_String::set( std::string_view str )
+void ST_String::set( std::string_view sv )
 {
-	set( str.data(), str.size() );
+	set( sv.data(), sv.size() );
 }
 
 void ST_String::set( const char* s, size_t len)
