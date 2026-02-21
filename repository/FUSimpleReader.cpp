@@ -1,4 +1,4 @@
-// This file implements a XML reader for  using SAX-style parsing.
+// This file implements an XML reader for  using SAX-style parsing.
 // The parser enforces a strict structure:
 //   document -> Functions -> Function -> (ID, Source)
 // Any unexpected element results in an error.
@@ -100,10 +100,10 @@ Functions Reader::read( const TY_Blob &data, std::string_view repo ) &&
 }
 
 /**
- * Structural validation of the element and push back to element stack.
-    It does not enforce order of <ID> vs <Source>.
-    It does not enforce that <Function> actually contains both fields.
-    It does not prevent multiple <Source> tags etc.
+ * Structural validation of the element and push back to element stack.<br>
+    It does not enforce order of <ID> vs <Source>. <br>
+    It does not enforce that <Function> actually contains both fields. <br>
+    It does not prevent multiple <Source> tags etc. <br>
  * @param localName the element name
  * @return true
  */
