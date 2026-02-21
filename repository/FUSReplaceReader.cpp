@@ -139,7 +139,7 @@ bool Reader::charactersChar( const char *, const char *, const char *, const cha
     if( currentElement == Element::id )
     {
         if (auto it = std::ranges::find_if(m_functions,
-                                           [&chars](auto function) { return !strcmp(chars, function.id.c_str()); });
+                                           [chars](const Function& function) { return !strcmp(chars, function.id.c_str()); });
                 it != m_functions.end())
         {
             utils::fatal(  "lm::duplicated_function_id", fmt::format( "Function with ID '{}' duplicated in {}.", chars, m_repository.c_str() ) );
