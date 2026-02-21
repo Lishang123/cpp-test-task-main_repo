@@ -16,3 +16,10 @@ TEST_CASE("ST_String: const char* string constructor is null-safe", "[String][st
     CHECK(b.isEmpty());
     CHECK(b.c_str() == nullptr);
 }
+
+TEST_CASE("ST_String: const char* string constructor with empty string", "[String][st_string]") {
+    ST_String s("");
+    CHECK(s.isEmpty());
+    CHECK(s.view().empty());
+    CHECK(s.length() == 0);
+}
