@@ -148,7 +148,7 @@ void ST_String::set( const char* s, size_t len)
 
 		if( len <= length())
 		{
-			strncpy( m_String, s, len);
+			std::memcpy( m_String, s, len);
 			m_String[len] = '\0';
 			return;
 		}
