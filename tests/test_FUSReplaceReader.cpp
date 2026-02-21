@@ -144,7 +144,6 @@ TEST_CASE("FUSReplaceReader rejects unexpected element while expecting Functions
         (void)rpl::readRepo(blob, "unexpected-elem-test");
         FAIL("Expected M_SystemMessage to be thrown");
     } catch (const M_SystemMessage& msg) {
-        std::cout << msg.getDescription() << std::endl;
         CHECK(std::string(msg.getCode()) == "lm::unexpected_element");
         CHECK(std::string(msg.getDescription()).starts_with("Expected 'Functions' while parsing "));
     }
@@ -221,7 +220,6 @@ TEST_CASE("FUSReplaceReader rejects unexpected elements while expecting a child 
 }
 
 
-
 TEST_CASE("FUSReplaceReader: <Source> before <ID>", "[repository][replace]") {
     ensure_xerces();
 
@@ -273,7 +271,7 @@ TEST_CASE("FUSReplaceReader parses doc with only ID as child of functions", "[re
     CHECK(std::string(functions[2].id.c_str()) == "stringLength...f2128203875h-1761480648.6_2");
 }
 
-TEST_CASE("FUSReplaceReader parses simple doc without function child", "[repository][simple]") {
+TEST_CASE("FUSReplaceReader parses simple doc without function child", "[repository][replace]") {
     ensure_xerces();
 
     const char* xml =
