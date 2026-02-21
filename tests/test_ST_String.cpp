@@ -7,6 +7,7 @@ TEST_CASE("ST_String: copy of default-constructed is null-safe", "[String][st_st
     ST_String a;
     ST_String b = a;
     CHECK(b.isEmpty());
+    CHECK(b.view().empty());
     CHECK(b.c_str() == nullptr);
 }
 
@@ -14,6 +15,7 @@ TEST_CASE("ST_String: const char* string constructor is null-safe", "[String][st
     const char* a = nullptr;
     ST_String b(a);
     CHECK(b.isEmpty());
+    CHECK(b.view().empty());
     CHECK(b.c_str() == nullptr);
 }
 
