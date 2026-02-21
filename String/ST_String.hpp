@@ -18,18 +18,18 @@ class ST_String
 
 	public:
 		ST_String();
-		explicit ST_String( const char* String);
-		ST_String( const char* String, size_t Length);
+		explicit ST_String( const char* s);
+		ST_String( const char* s, size_t len);
 		explicit ST_String( std::string_view sv );
 
-		ST_String( const ST_String& String);
-		ST_String( ST_String&& String ) noexcept;
+		ST_String( const ST_String& other);
+		ST_String( ST_String&& other ) noexcept;
 		~ST_String();
 
-		ST_String& operator=( const char* String);
-		ST_String& operator=( std::string_view String);
-		ST_String& operator=( const ST_String& String);
-		ST_String& operator=( ST_String&& String) noexcept ;
+		ST_String& operator=( const char* s);
+		ST_String& operator=( std::string_view sv);
+		ST_String& operator=( const ST_String& rhs);
+		ST_String& operator=( ST_String&& rhs) noexcept ;
 
         std::strong_ordering operator<=>( const M::String::StringType auto &rhs ) const noexcept
         {
@@ -40,16 +40,16 @@ class ST_String
 		[[nodiscard]] size_t length() const;
 
 		/** Set new value.
-		  * @param String New value.
+		  * @param s New value.
 		  */
-		void set( const char* String);
+		void set( const char* s);
 		void set( std::string_view str );
-		void consume( char* String);
+		void consume( char* s);
 		/** Set new value.
-		  * @param String New value.
-		  * @param Length Lenght to copy.
+		  * @param s New value.
+		  * @param len Length to copy.
 		  */
-		void set( const char* String, size_t Length);
+		void set( const char* s, size_t len);
 
 		[[nodiscard]] const char* c_str() const noexcept;
         [[nodiscard]] std::string_view view() const noexcept;

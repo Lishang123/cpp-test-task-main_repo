@@ -18,8 +18,8 @@ ST_String::ST_String()
 {
 }
 
-ST_String::ST_String( const char* String, size_t Length)
-    : m_String( duplicate(String, Length ) )
+ST_String::ST_String( const char* s, size_t len)
+    : m_String( duplicate(s, len ) )
 {
 }
 
@@ -28,22 +28,22 @@ ST_String::ST_String( std::string_view sv )
 {
 }
 
-ST_String::ST_String( const char* String)
-    : m_String( String ? duplicate( String, strlen(String) + 1) : nullptr )
+ST_String::ST_String( const char* s)
+    : m_String( s ? duplicate( s, strlen(s) + 1) : nullptr )
 {
 }
 
-ST_String::ST_String(const ST_String& String)
-	: m_String(String.m_String
-		? duplicate(String.m_String, std::strlen(String.m_String) + 1)
+ST_String::ST_String(const ST_String& other)
+	: m_String(other.m_String
+		? duplicate(other.m_String, std::strlen(other.m_String) + 1)
 		: nullptr)
 {
 }
 
-ST_String::ST_String( ST_String&& String) noexcept
-    : m_String( String.m_String)
+ST_String::ST_String( ST_String&& other) noexcept
+    : m_String( other.m_String)
 {
-	String.m_String = nullptr;
+	other.m_String = nullptr;
 }
 
 ST_String::~ST_String()
@@ -51,36 +51,36 @@ ST_String::~ST_String()
     release( m_String );
 }
 
-ST_String& ST_String::operator=( const char* String)
+ST_String& ST_String::operator=( const char* s)
 {
-	set( String);
+	set( s);
 
 	return( *this);
 }
 
-ST_String& ST_String::operator=( std::string_view String)
+ST_String& ST_String::operator=( std::string_view sv)
 {
-	set( String);
+	set( sv);
 	return *this;
 }
 
-ST_String& ST_String::operator=( const ST_String& String)
+ST_String& ST_String::operator=( const ST_String& rhs)
 {
-	if( this != &String)
+	if( this != &rhs)
 	{
-		assert( !m_String || m_String != String.m_String);
-		set( String.m_String);
+		assert( !m_String || m_String != rhs.m_String);
+		set( rhs.m_String);
 	}
 
 	return( *this);
 }
 
-ST_String& ST_String::operator=( ST_String&& String)
+ST_String& ST_String::operator=( ST_String&& rhs)
  noexcept {
-	if( this != &String)
+	if( this != &rhs)
 	{
-		consume( String.m_String);
-		String.m_String = nullptr;
+		consume( rhs.m_String);
+		rhs.m_String = nullptr;
 	}
 
 	return *this;
@@ -112,15 +112,15 @@ void ST_String::reset()
 	m_String = nullptr;
 }
 
-void ST_String::consume( char* String)
+void ST_String::consume( char* s)
 {
     release(m_String);
-	m_String = String;
+	m_String = s;
 }
 
-void ST_String::set( const char* String)
+void ST_String::set( const char* s)
 {
-	set( String, -1);
+	set( s, -1);
 }
 
 void ST_String::set( std::string_view str )
@@ -128,34 +128,34 @@ void ST_String::set( std::string_view str )
 	set( str.data(), str.size() );
 }
 
-void ST_String::set( const char* String, size_t Length)
+void ST_String::set( const char* s, size_t len)
 {
 	// Since memory allocation is generally costly, try to reuse current allocation.
 	// Because we don't store size, we use current length as indicator if reuse is possible.
-    if( !String )
+    if( !s )
     {
         reset();
         return;
     }
-	if( String && m_String)
+	if( s && m_String)
 	{
-		if( Length == -1 )
+		if( len == -1 )
 		{
-			Length = strlen( String);
+			len = strlen( s);
 		}
 
-		if( Length <= length())
+		if( len <= length())
 		{
-			strncpy( m_String, String, Length);
-			m_String[Length] = '\0';
+			strncpy( m_String, s, len);
+			m_String[len] = '\0';
 			return;
 		}
 	}
-    if( Length == -1 )
+    if( len == -1 )
     {
-        Length = strlen( String );
+        len = strlen( s );
     }
-	consume( duplicate(String, Length));
+	consume( duplicate(s, len));
 }
 
 
