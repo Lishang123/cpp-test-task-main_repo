@@ -196,3 +196,27 @@ TEST_CASE("FUSReplaceReader rejects unexpected child of ID/Source", "[repository
     }
 }
 
+TEST_CASE("FUSReplaceReader: <Source> before <ID>", "[repository][replace]") {
+    ensure_xerces();
+
+    const char* xml =
+        R"(<?xml version="1.0" encoding="UTF-8"?>
+           <Functions>
+             <Function>
+                <source>0.1</source>
+                <id>stringLength...f2128203875h-1761480648.5_1</id>
+            </Function>
+           </Functions>)";
+
+    TY_Blob blob(xml, std::strlen(xml));
+
+    try {
+        (void)rpl::readRepo(blob, "source-before-id-test");
+        FAIL("Expected M_SystemMessage to be thrown");
+    } catch (const M_SystemMessage& msg) {
+        CHECK(std::string(msg.getCode()) == "lm::other_function_child_before_id");
+        CHECK(std::string(msg.getDescription()).starts_with("Found <Source> before <ID> while parsing"));
+    }
+}
+
+
