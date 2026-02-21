@@ -177,7 +177,7 @@ bool Reader::charactersChar( const char *, const char *, const char *, const cha
         // TODO: There seems to be other issues in the copy constructor of ST_String.
         if (auto it = std::ranges::find_if(
                                             m_functions,
-                                           [&chars](const Function& function) { return !strcmp(chars, function.id.c_str()); }
+                                           [chars](const Function& function) { return !strcmp(chars, function.id.c_str()); }
                                            );
                 it != m_functions.end())
         {
