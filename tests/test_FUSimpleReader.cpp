@@ -271,3 +271,21 @@ TEST_CASE("FUSimpleReader parses simple doc without <source>", "[repository][sim
     CHECK(std::string(functions[0].id.c_str()) == "stringLength...f2128203875h-1761480648.5_1");
     CHECK(std::string(functions[1].id.c_str()) == "stringLength...f2128203875h-1761480648.6_1");
 }
+
+
+TEST_CASE("FUSimpleReader parses simple doc without function child", "[repository][simple]") {
+    ensure_xerces();
+
+    const char* xml =
+        R"(<?xml version="1.0" encoding="UTF-8"?>
+           <Functions>
+             <Function/>
+             <Function/>
+           </Functions>)";
+
+    TY_Blob blob(xml, std::strlen(xml));
+
+    auto functions = spl::readRepo(blob, "test-no-function-child");
+
+    REQUIRE(functions.empty());
+}

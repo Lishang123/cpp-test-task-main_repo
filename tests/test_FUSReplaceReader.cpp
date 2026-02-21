@@ -273,4 +273,19 @@ TEST_CASE("FUSReplaceReader parses doc with only ID as child of functions", "[re
     CHECK(std::string(functions[2].id.c_str()) == "stringLength...f2128203875h-1761480648.6_2");
 }
 
+TEST_CASE("FUSReplaceReader parses simple doc without function child", "[repository][simple]") {
+    ensure_xerces();
 
+    const char* xml =
+        R"(<?xml version="1.0" encoding="UTF-8"?>
+           <Functions>
+             <Function/>
+             <Function/>
+           </Functions>)";
+
+    TY_Blob blob(xml, std::strlen(xml));
+
+    auto functions = rpl::readRepo(blob, "test-no-function-child");
+
+    REQUIRE(functions.empty());
+}
