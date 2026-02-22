@@ -26,26 +26,19 @@ namespace M::Memory {
 		throw std::bad_alloc();
 	}
 
-	void* allocate( size_t Size)
+	void* allocate( size_t size)
 	{
-		void* Buffer = nullptr;
-
-		if( !Size)
+		if(size == 0)
 		{
-			Size = 1; //malloc can return nullptr if feeded with 0, so we avoid this false-positiv error
+			size = 1; //malloc can return nullptr if feeded with 0, so we avoid this false-positiv error
 		}
 
-		if( !( Buffer = malloc( Size)))
+		if( void* Buffer = malloc( size))
 		{
-			// allocation failed
-			outOfMemoryHandler();
-			return( nullptr);
+			return Buffer;
 		}
-		else
-		{
-			// allocation went fine
-			return( Buffer);
-		}
+		// allocation failed
+		outOfMemoryHandler();
 	}
 
 	void* callocate( size_t Size, size_t Count)
