@@ -1,9 +1,10 @@
 #include "FUSReplaceReader.hpp"
 #include "utils.hpp"
 #include "../XML/XML_Parser.hpp"
+#include "specs/ReplaceSpec.hpp"
+
 #include <array>
 #include <algorithm>
-
 
 namespace functions::repository::replace
 {
@@ -198,7 +199,9 @@ bool Reader::endElementChar( const char *, const char *, const char * )
 
 Functions readRepo( const TY_Blob &data, std::string_view repo )
 {
-    return Reader {}.read( data, repo );
+    // You can swap the reader used here.
+    // return Reader {}.read( data, repo );
+    return FUSReader<ReplaceSpec>{}.read( data, repo );
 }
 
 
