@@ -48,7 +48,7 @@ private:
 
     bool startElementChar( const char *, const char *localName, const char *, const xercesc::Attributes & ) override;
     bool endElementChar( const char *, const char *, const char * ) override;
-    bool charactersChar( const char *, const char *, const char *, const char *text, const unsigned int ) override;
+    bool charactersChar( const char *, const char *, const char *, const char *text, unsigned int ) override;
 
 };
 

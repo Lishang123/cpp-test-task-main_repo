@@ -47,7 +47,7 @@ private:
     void errorMessage( const M_SystemMessage &message ) override;
 
     bool startElementChar( const char *, const char *localName, const char *, const xercesc::Attributes & ) override;
-    bool charactersChar( const char *, const char *, const char *, const char *chars, const unsigned int ) override;
+    bool charactersChar( const char *, const char *, const char *, const char *chars, unsigned int ) override;
     bool endElementChar( const char *, const char *, const char *) override;
 
     static constexpr std::string_view toString(Element e)
