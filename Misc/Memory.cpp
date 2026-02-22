@@ -31,18 +31,18 @@ void outOfMemoryHandler()
 
 void* allocate( size_t Size)
 {
-	void* Buffer = NULL;
+	void* Buffer = nullptr;
 
 	if( !Size)
 	{
-		Size = 1; //malloc can return NULL if feeded with 0, so we avoid this false-positiv error
+		Size = 1; //malloc can return nullptr if feeded with 0, so we avoid this false-positiv error
 	}
 
 	if( !( Buffer = malloc( Size)))
 	{
 		// allocation failed
 		outOfMemoryHandler();
-		return( NULL);
+		return( nullptr);
 	}
 	else
 	{
@@ -69,7 +69,7 @@ void* reAllocate( void* OldBuffer, size_t Size)
 		return( allocate( Size));
 	}
 
-	void* Buffer = NULL;
+	void* Buffer = nullptr;
 
 	if( !Size)
 	{
@@ -80,7 +80,7 @@ void* reAllocate( void* OldBuffer, size_t Size)
 	{
 		// realloc failed
 		outOfMemoryHandler();
-		return( NULL);
+		return( nullptr);
 	}
 	else
 	{
@@ -92,7 +92,7 @@ void* duplicate( const void* OldBuffer, size_t Size)
 {
 	if( !OldBuffer)
 	{
-		return( NULL);
+		return( nullptr);
 	}
 
 	void* Result;
@@ -122,14 +122,14 @@ void* duplicate( void* Buffer, size_t Size)
 {
 	if( !Buffer)
 	{
-		return( NULL);
+		return( nullptr);
 	}
 
 	void* Result;
 
 	if( !( Result = allocate( Size)))
 	{
-		return( NULL);
+		return( nullptr);
 	}
 
 	if( Size)
@@ -144,14 +144,14 @@ char* duplicate( const char* Buffer, size_t Size)
 {
 	if( !Buffer)
 	{
-		return NULL;
+		return nullptr;
 	}
 
 	char* Result = static_cast<char*>( allocate( Size + 1));
 
 	if( !Result)
 	{
-		return NULL;
+		return nullptr;
 	}
 
 	if( Size)
