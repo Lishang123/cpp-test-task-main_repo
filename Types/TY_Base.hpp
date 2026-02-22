@@ -9,9 +9,8 @@ class TY_Base
 {
 
 	public:
-		static void* operator new( size_t Size);
-		static void operator delete( void* Old);	
-		
+		void* operator new( size_t Size);
+		void operator delete( void* Old) noexcept;
 
 };
 
