@@ -6,7 +6,7 @@
 
 #include <iostream>
 #ifdef __APPLE__
-#include <stdlib.h>
+#include <cstdlib>
 #else
 #include <malloc.h>
 #endif
