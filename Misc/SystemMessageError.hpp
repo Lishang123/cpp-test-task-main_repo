@@ -1,5 +1,6 @@
 #ifndef CPP_TASK_SYSTEMERRORMESSAGE_HPP
 #define CPP_TASK_SYSTEMERRORMESSAGE_HPP
+#include "M_SystemMessage.hpp"
 
 class SystemMessageError final : public std::runtime_error {
 public:
