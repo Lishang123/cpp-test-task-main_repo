@@ -35,7 +35,7 @@ class  TY_Blob final : public TY_Base
 		TY_Blob();
 		TY_Blob( const TY_Blob& content);
 		explicit TY_Blob( const TY_Blob* content);
-		TY_Blob( TY_Blob&& content);
+		TY_Blob( TY_Blob&& content) noexcept;
 		TY_Blob( const char* content);
 		TY_Blob( const void* content, T_uint64 size);
 		TY_Blob( char* content, bool consume);
@@ -43,7 +43,7 @@ class  TY_Blob final : public TY_Base
 		~TY_Blob();
 
 		TY_Blob& operator=( const TY_Blob& src);
-		TY_Blob& operator=( TY_Blob&& src);
+		TY_Blob& operator=( TY_Blob&& src) noexcept;
 
 		// Create calls for dynamic allocation.
 		template<class... Types>

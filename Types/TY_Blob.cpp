@@ -30,8 +30,7 @@ TY_Blob::TY_Blob( const TY_Blob* content)
 	setContent( content);
 }
 
-TY_Blob::TY_Blob( TY_Blob&& content)
-	: m_size( content.m_size)
+TY_Blob::TY_Blob( TY_Blob&& content) noexcept : m_size( content.m_size)
     , m_content( content.m_content)
 {
 	content.m_content = nullptr;
@@ -78,7 +77,7 @@ TY_Blob& TY_Blob::operator=( const TY_Blob& src)
 	return *this;
 }
 
-TY_Blob& TY_Blob::operator=( TY_Blob&& src)
+TY_Blob& TY_Blob::operator=( TY_Blob&& src) noexcept
 {
 	if( this != &src)
 	{
