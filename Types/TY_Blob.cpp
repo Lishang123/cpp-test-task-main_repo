@@ -34,6 +34,7 @@ TY_Blob::TY_Blob( TY_Blob&& content) noexcept : m_size( content.m_size)
     , m_content( content.m_content)
 {
 	content.m_content = nullptr;
+	content.m_size = 0;
 }
 
 TY_Blob::TY_Blob( const char* content)
@@ -85,6 +86,7 @@ TY_Blob& TY_Blob::operator=( TY_Blob&& src) noexcept
 		m_size = src.m_size;
 		m_content = src.m_content;
 		src.m_content = nullptr;
+		src.m_size = 0;
 	}
 	return *this;
 }
