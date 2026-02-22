@@ -98,23 +98,21 @@ void release( void* OldBuffer)
 	free( OldBuffer);
 }
 
-void* duplicate( void* Buffer, size_t Size)
+void* duplicate( const void* OldBuffer, size_t Size)
 {
-	if( !Buffer)
+	if( !OldBuffer)
 	{
 		return( nullptr);
 	}
 
 	void* Result;
 
-	if( !( Result = allocate( Size)))
+	if(( Result = allocate( Size)))
 	{
-		return( nullptr);
-	}
-
-	if( Size)
-	{
-		memcpy( Result, Buffer, Size);
+		if( Size)
+		{
+			memcpy( Result, OldBuffer, Size);
+		}
 	}
 
 	return( Result);
