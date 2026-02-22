@@ -107,12 +107,8 @@ namespace M::Memory {
 
 	char* create( size_t length )
 	{
-		char* Result;
-
-		if(( Result = static_cast< char*>( allocate( length + 1))))
-		{
-			*Result = 0;
-		}
+		char* Result = static_cast< char*>( allocate( length + 1));
+		Result[0] = '\0';
 
 		return Result;
 	}

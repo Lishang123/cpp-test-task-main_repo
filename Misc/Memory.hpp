@@ -80,7 +80,12 @@ namespace M::Memory
 	  */
 	 char* duplicate( const char* Buffer, size_t Size);
 
-     char* create( size_t length );
+	 /**
+	  * create an empty C-string with size length
+	  * @param length
+	  * @return a pointer to the C-string
+	  */
+	 char* create( size_t length );
 
 	 void installOutOfMemoryHandler();
 
