@@ -20,6 +20,7 @@ set(Sources
         ./String/generic.hpp
         ./Misc/M_SystemMessage.cpp
         ./Misc/M_SystemMessage.hpp
+        ./Misc/SystemMessageError.hpp
         ./Misc/M_MemoryStream.hpp
         ./Misc/M_MemoryStream.cpp
         ./Misc/Memory.hpp
