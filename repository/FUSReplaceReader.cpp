@@ -2,6 +2,7 @@
 #include "utils.hpp"
 #include "../XML/XML_Parser.hpp"
 #include "specs/ReplaceSpec.hpp"
+#include "../Misc/SystemMessageError.hpp"
 
 #include <array>
 #include <algorithm>
@@ -66,7 +67,7 @@ private:
 
 void Reader::errorMessage(const M_SystemMessage &message)
 {
-    throw message;
+    throw SystemMessageError(message);
 }
 
 Reader::Element Reader::toElement( std::string_view name )

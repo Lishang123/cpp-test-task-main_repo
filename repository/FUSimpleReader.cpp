@@ -7,6 +7,8 @@
 #include "../XML/XML_Parser.hpp"
 #include "specs/SimpleSpec.hpp"
 #include "utils.hpp"
+#include "../Misc/SystemMessageError.hpp"
+
 #include <array>
 #include <algorithm>
 
@@ -53,7 +55,7 @@ private:
 void Reader::errorMessage( const M_SystemMessage &message )
 {
     // Any XML parse error becomes an exception.
-    throw message;
+    throw SystemMessageError(message);
 }
 
 /**

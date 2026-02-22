@@ -1,7 +1,7 @@
 // Copyright (c) Scheer PAS Schweiz AG
 
 #include "utils.hpp"
-
+#include "../Misc/SystemMessageError.hpp"
 
 namespace utils
 {
@@ -19,13 +19,13 @@ M_SystemMessage sysMsg( std::string_view code, std::string_view message )
 [[noreturn]]
 void fatal( std::string_view code, std::string_view msg )
 {
-    throw logMsg( code, msg );
+    throw SystemMessageError(logMsg( code, msg ));
 }
 
 [[noreturn]]
 void error( std::string_view code, std::string_view msg )
 {
-    throw sysMsg( code, msg );
+    throw SystemMessageError(sysMsg( code, msg ));
 }
 
 namespace
@@ -33,9 +33,7 @@ namespace
 
 void unexpected( std::string_view code, const std::string &msg )
 {
-    auto message = logMsg( code, msg );
-
-    throw message;
+    throw SystemMessageError(logMsg( code, msg ));
 }
 
 void unexpected(const std::string &msg )

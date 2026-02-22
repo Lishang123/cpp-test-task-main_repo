@@ -2,6 +2,7 @@
 #define CPP_TASK_FUSREADER_HPP
 #include "../utils.hpp"
 #include "../../XML/XML_Parser.hpp"
+#include "../../Misc/SystemMessageError.hpp"
 #include "FUSpec.hpp"
 #include <ranges>
 
@@ -27,7 +28,7 @@ private:
     std::vector<Element> m_elementStack{};
     ST_String m_repository{};
 
-    void errorMessage(const M_SystemMessage& message) override { throw message; }
+    void errorMessage(const M_SystemMessage& message) override { throw SystemMessageError(message); }
 
     bool startElementChar(const char*, const char* localName, const char*, const xercesc::Attributes&) override {
         const Element parent = m_elementStack.back();

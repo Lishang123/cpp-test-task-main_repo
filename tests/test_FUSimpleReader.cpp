@@ -2,7 +2,7 @@
 
 #include "../repository/FUSimpleReader.hpp"
 #include "../Types/TY_Blob.hpp"
-#include "../Misc/M_SystemMessage.hpp"
+#include "../Misc/SystemMessageError.hpp"
 #include "../repository/specs/SimpleSpec.hpp"
 
 #include <xercesc/util/PlatformUtils.hpp>
@@ -118,7 +118,8 @@ TEST_CASE("FUSimpleReader rejects duplicated function IDs", "[repository][simple
     try {
         (void)spl::readRepo(blob, "dup-test");
         FAIL("Expected M_SystemMessage to be thrown");
-    } catch (const M_SystemMessage& msg) {
+    } catch (const SystemMessageError& error) {
+        const auto& msg = error.message();
         CHECK(std::string(msg.getCode()) == "lm::duplicated_function_id");
     }
 }
@@ -138,7 +139,8 @@ TEST_CASE("FUSimpleReader rejects unknown elements", "[repository][simple]") {
     try {
         (void)spl::readRepo(blob, "unknown-elem-test");
         FAIL("Expected M_SystemMessage to be thrown");
-    } catch (const M_SystemMessage& msg) {
+    } catch (const SystemMessageError& error) {
+        const auto& msg = error.message();
         CHECK(std::string(msg.getCode()) == "lm::unexpected_element");
         CHECK(std::string(msg.getDescription()).starts_with("Found unexpected element 'FunctionA' while parsing"));
     }
@@ -159,8 +161,8 @@ TEST_CASE("FUSimpleReader rejects unexpected element while expecting Functions",
     try {
         (void)spl::readRepo(blob, "unexpected-elem-test");
         FAIL("Expected M_SystemMessage to be thrown");
-    } catch (const M_SystemMessage& msg) {
-        std::cout << msg.getDescription() << std::endl;
+    } catch (const SystemMessageError& error) {
+        const auto& msg = error.message();
         CHECK(std::string(msg.getCode()) == "lm::unexpected_element");
         CHECK(std::string(msg.getDescription()).starts_with("Expected 'Functions' while parsing "));
     }
@@ -181,8 +183,8 @@ TEST_CASE("FUSimpleReader rejects unexpected elements while expecting Function",
     try {
         (void)spl::readRepo(blob, "unexpected-elem-test");
         FAIL("Expected M_SystemMessage to be thrown");
-    } catch (const M_SystemMessage& msg) {
-        std::cout << msg.getDescription() << std::endl;
+    } catch (const SystemMessageError& error) {
+        const auto& msg = error.message();
         CHECK(std::string(msg.getCode()) == "lm::unexpected_element");
         CHECK(std::string(msg.getDescription()).starts_with("Expected 'Function' while parsing "));
     }
@@ -205,8 +207,8 @@ TEST_CASE("FUSimpleReader rejects unexpected elements while expecting ID/Source"
     try {
         (void)spl::readRepo(blob, "unexpected-elem-test");
         FAIL("Expected M_SystemMessage to be thrown");
-    } catch (const M_SystemMessage& msg) {
-        std::cout << msg.getDescription() << std::endl;
+    } catch (const SystemMessageError& error) {
+        const auto& msg = error.message();
         CHECK(std::string(msg.getCode()) == "lm::unexpected_element");
         CHECK(std::string(msg.getDescription()).starts_with("Expected one of ['ID', 'Source']"));
     }
@@ -229,7 +231,8 @@ TEST_CASE("FUSimpleReader rejects unexpected child of ID/Source", "[repository][
     try {
         (void)spl::readRepo(blob, "unexpected-child-test");
         FAIL("Expected M_SystemMessage to be thrown");
-    } catch (const M_SystemMessage& msg) {
+    } catch (const SystemMessageError& error) {
+        const auto& msg = error.message();
         CHECK(std::string(msg.getCode()) == "lm::unexpected_child_element");
         CHECK(std::string(msg.getDescription()).starts_with("Found unexpected child element 'id'"));
     }
@@ -253,7 +256,8 @@ TEST_CASE("FUSimpleReader: <Source> before <ID>", "[repository][simple]") {
     try {
         (void)spl::readRepo(blob, "source-before-id-test");
         FAIL("Expected M_SystemMessage to be thrown");
-    } catch (const M_SystemMessage& msg) {
+    } catch (const SystemMessageError& error) {
+        const auto& msg = error.message();
         CHECK(std::string(msg.getCode()) == "lm::source_before_id");
     }
 }
@@ -385,7 +389,8 @@ TEST_CASE("FUSimpleReader validates closing tags", "[repository][simple]") {
         auto functions = spl::readRepo(blob, "test-validates-closing-tags");
         FAIL("Expected M_SystemMessage to be thrown");
     }
-    catch (const M_SystemMessage& msg) {
+    catch (const SystemMessageError& error) {
+        const auto& msg = error.message();
         CHECK(std::string(msg.getCode()) == "XMLLM_XR_REPOSITORYPARSER_NATIVE_FATAL_PARSE_ERROR");
         CHECK(std::string(msg.getDescription()).find("expected end of tag 'ID'") != std::string::npos);
     }

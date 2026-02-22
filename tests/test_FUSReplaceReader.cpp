@@ -2,7 +2,7 @@
 
 #include "../repository/FUSReplaceReader.hpp"
 #include "../Types/TY_Blob.hpp"
-#include "../Misc/M_SystemMessage.hpp"
+#include "../Misc/SystemMessageError.hpp"
 
 #include <xercesc/util/PlatformUtils.hpp>
 
@@ -102,7 +102,8 @@ TEST_CASE("FUSReplaceReader rejects duplicated function IDs", "[repository][repl
     try {
         (void)rpl::readRepo(blob, "dup-test");
         FAIL("Expected M_SystemMessage to be thrown");
-    } catch (const M_SystemMessage& msg) {
+    } catch (const SystemMessageError& error) {
+        const auto& msg = error.message();
         CHECK(std::string(msg.getCode()) == "lm::duplicated_function_id");
     }
 }
@@ -122,7 +123,8 @@ TEST_CASE("FUSReplaceReader rejects unknown elements", "[repository][replace]") 
     try {
         (void)rpl::readRepo(blob, "unknown-elem-test");
         FAIL("Expected M_SystemMessage to be thrown");
-    } catch (const M_SystemMessage& msg) {
+    } catch (const SystemMessageError& error) {
+        const auto& msg = error.message();
         CHECK(std::string(msg.getCode()) == "lm::unexpected_element");
         CHECK(std::string(msg.getDescription()).starts_with("Found unexpected element 'FunctionA' while parsing"));
     }
@@ -143,7 +145,8 @@ TEST_CASE("FUSReplaceReader rejects unexpected element while expecting Functions
     try {
         (void)rpl::readRepo(blob, "unexpected-elem-test");
         FAIL("Expected M_SystemMessage to be thrown");
-    } catch (const M_SystemMessage& msg) {
+    } catch (const SystemMessageError& error) {
+        const auto& msg = error.message();
         CHECK(std::string(msg.getCode()) == "lm::unexpected_element");
         CHECK(std::string(msg.getDescription()).starts_with("Expected 'Functions' while parsing "));
     }
@@ -164,8 +167,8 @@ TEST_CASE("FUSReplaceReader rejects unexpected elements while expecting Function
     try {
         (void)rpl::readRepo(blob, "unexpected-elem-test");
         FAIL("Expected M_SystemMessage to be thrown");
-    } catch (const M_SystemMessage& msg) {
-        std::cout << msg.getDescription() << std::endl;
+    } catch (const SystemMessageError& error) {
+        const auto& msg = error.message();
         CHECK(std::string(msg.getCode()) == "lm::unexpected_element");
         CHECK(std::string(msg.getDescription()).starts_with("Expected 'Function' while parsing "));
     }
@@ -189,7 +192,8 @@ TEST_CASE("FUSReplaceReader rejects unexpected child of ID/Source", "[repository
     try {
         (void)rpl::readRepo(blob, "unexpected-child-test");
         FAIL("Expected M_SystemMessage to be thrown");
-    } catch (const M_SystemMessage& msg) {
+    } catch (const SystemMessageError& error) {
+        const auto& msg = error.message();
         CHECK(std::string(msg.getCode()) == "lm::unexpected_child_element");
         CHECK(std::string(msg.getDescription()).starts_with("Found unexpected child element 'id'"));
     }
@@ -213,14 +217,15 @@ TEST_CASE("FUSReplaceReader rejects unexpected elements while expecting a child 
     try {
         (void)rpl::readRepo(blob, "unexpected-elem-test");
         FAIL("Expected M_SystemMessage to be thrown");
-    } catch (const M_SystemMessage& msg) {
+    } catch (const SystemMessageError& error) {
+        const auto& msg = error.message();
         CHECK(std::string(msg.getCode()) == "lm::unexpected_element");
         CHECK(std::string(msg.getDescription()).starts_with("Expected one of ['ID', 'Source', 'Pattern', 'Replacement']"));
     }
 }
 
 
-TEST_CASE("FUSReplaceReader: <Source> before <ID>", "[repository][replace]") {
+TEST_CASE("FUSReplaceReader: <Pattern> before <ID>", "[repository][replace]") {
     ensure_xerces();
 
     const char* xml =
@@ -235,9 +240,10 @@ TEST_CASE("FUSReplaceReader: <Source> before <ID>", "[repository][replace]") {
     TY_Blob blob(xml, std::strlen(xml));
 
     try {
-        (void)rpl::readRepo(blob, "source-before-id-test");
+        (void)rpl::readRepo(blob, "pattern-before-id-test");
         FAIL("Expected M_SystemMessage to be thrown");
-    } catch (const M_SystemMessage& msg) {
+    } catch (const SystemMessageError& error) {
+        const auto& msg = error.message();
         CHECK(std::string(msg.getCode()) == "lm::other_function_child_before_id");
         CHECK(std::string(msg.getDescription()).starts_with("Found <Pattern> before <ID> while parsing"));
     }
