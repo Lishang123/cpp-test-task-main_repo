@@ -113,16 +113,14 @@ void TY_Blob::append( const char* content, T_uint64 size)
 		return;
 	}
 
-	// resize
-	m_content = reAllocate( m_content, m_size + size);
-
-	if( !m_content)
+	// resize first in local variable to prevent the old block being modified
+	void* new_content = reAllocate( m_content, m_size + size);
+	if( !new_content)
 	{
 		// out of memory!?
-		m_size = 0;
 		return;
 	}
-
+	m_content = new_content;
 	// copy content
 	memcpy( static_cast< char*>( m_content) + m_size, content, size);
 	m_size += size;
@@ -252,9 +250,11 @@ void TY_Blob::setSize( T_uint64 size, char padding)
 {
 	if( size > m_size)
 	{
-		// Resize.
-		m_content = reAllocate( m_content, size);
-
+		// Resize first in local var to prevent the original being set to null.
+		void* new_content = reAllocate( m_content, size);
+		if( !new_content)
+			return;
+		m_content = new_content;
 		memset( static_cast< char*>( m_content) + m_size, padding, size - m_size);
 	}
 
