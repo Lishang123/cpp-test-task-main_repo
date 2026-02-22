@@ -45,7 +45,7 @@ void unexpected( std::string msg )
 
 } // namespace
 
-std::string listToString(std::initializer_list<std::string_view> list) {
+std::string listToString(const std::vector<std::string_view>& list) {
     std::string res {"["};
     bool first = true;
     for (auto wanted : list) {
@@ -57,7 +57,7 @@ std::string listToString(std::initializer_list<std::string_view> list) {
     return res;
 }
 
-void unexpectedElement( std::string_view got, std::initializer_list<std::string_view> wanted_list,
+void unexpectedElement( std::string_view got, const std::vector<std::string_view>& wanted_list,
                             std::string_view repo )
 {
     std::string expected;
