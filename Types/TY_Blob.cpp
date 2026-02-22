@@ -159,22 +159,15 @@ void TY_Blob::detachContent( char** content, T_uint64* size)
 
 T_uint64 TY_Blob::copyContent( char* buffer, T_uint64 offset, T_uint64 size) const
 {
-	if( !m_content || !buffer)
-	{
+	if( !m_content || !buffer) return 0;
+
+	if (offset >= m_size)
 		return 0;
-	}
 
 	T_uint64 sizeLeft = m_size - offset;
 
-	if( sizeLeft <= 0)
-	{
-		return 0;
-	}
-
 	if( sizeLeft < size)
-	{
 		size = sizeLeft;
-	}
 
 	memcpy( buffer, static_cast< char*>( m_content) + offset, size);
 
