@@ -14,145 +14,139 @@
 #include <new>
 
 
-namespace M
-{
-namespace Memory
-{
-void installOutOfMemoryHandler()
-{
-    std::set_new_handler( outOfMemoryHandler );
-}
-
-void outOfMemoryHandler()
-{
-    std::cerr<<"Out of memory\n";
-	throw std::bad_alloc();
-}
-
-void* allocate( size_t Size)
-{
-	void* Buffer = nullptr;
-
-	if( !Size)
+namespace M::Memory {
+	void installOutOfMemoryHandler()
 	{
-		Size = 1; //malloc can return nullptr if feeded with 0, so we avoid this false-positiv error
+		std::set_new_handler( outOfMemoryHandler );
 	}
 
-	if( !( Buffer = malloc( Size)))
+	void outOfMemoryHandler()
 	{
-		// allocation failed
-		outOfMemoryHandler();
-		return( nullptr);
-	}
-	else
-	{
-		// allocation went fine
-		return( Buffer);
-	}
-}
-
-void* callocate( size_t Size, size_t Count)
-{
-	void* Buffer = calloc( Count, Size);
-	if( !Buffer)
-	{
-		outOfMemoryHandler();
+		std::cerr<<"Out of memory\n";
+		throw std::bad_alloc();
 	}
 
-	return Buffer;
-}
-
-void* reAllocate( void* OldBuffer, size_t Size)
-{
-	if( !OldBuffer)
+	void* allocate( size_t Size)
 	{
-		return( allocate( Size));
-	}
+		void* Buffer = nullptr;
 
-	void* Buffer = nullptr;
-
-	if( !Size)
-	{
-		Size = 1; //avoid false-positive error
-	}
-
-	if( !( Buffer = realloc( OldBuffer, Size)))
-	{
-		// realloc failed
-		outOfMemoryHandler();
-		return( nullptr);
-	}
-	else
-	{
-		return( Buffer);
-	}
-}
-
-void release( void* OldBuffer)
-{
-	if( !OldBuffer)
-	{
-		return;
-	}
-
-	free( OldBuffer);
-}
-
-void* duplicate( const void* OldBuffer, size_t Size)
-{
-	if( !OldBuffer)
-	{
-		return( nullptr);
-	}
-
-	void* Result;
-
-	if(( Result = allocate( Size)))
-	{
-		if( Size)
+		if( !Size)
 		{
-			memcpy( Result, OldBuffer, Size);
+			Size = 1; //malloc can return nullptr if feeded with 0, so we avoid this false-positiv error
+		}
+
+		if( !( Buffer = malloc( Size)))
+		{
+			// allocation failed
+			outOfMemoryHandler();
+			return( nullptr);
+		}
+		else
+		{
+			// allocation went fine
+			return( Buffer);
 		}
 	}
 
-	return( Result);
-}
-
-char* duplicate( const char* Buffer, size_t Size)
-{
-	if( !Buffer)
+	void* callocate( size_t Size, size_t Count)
 	{
-		return nullptr;
+		void* Buffer = calloc( Count, Size);
+		if( !Buffer)
+		{
+			outOfMemoryHandler();
+		}
+
+		return Buffer;
 	}
 
-	char* Result = static_cast<char*>( allocate( Size + 1));
-
-	if( !Result)
+	void* reAllocate( void* OldBuffer, size_t Size)
 	{
-		return nullptr;
+		if( !OldBuffer)
+		{
+			return( allocate( Size));
+		}
+
+		void* Buffer = nullptr;
+
+		if( !Size)
+		{
+			Size = 1; //avoid false-positive error
+		}
+
+		if( !( Buffer = realloc( OldBuffer, Size)))
+		{
+			// realloc failed
+			outOfMemoryHandler();
+			return( nullptr);
+		}
+		else
+		{
+			return( Buffer);
+		}
 	}
 
-	if( Size)
+	void release( void* OldBuffer)
 	{
-		memcpy( Result, Buffer, Size);
+		if( !OldBuffer)
+		{
+			return;
+		}
+
+		free( OldBuffer);
 	}
-    Result[Size]= '\0';
 
-	return Result;
+	void* duplicate( const void* OldBuffer, size_t Size)
+	{
+		if( !OldBuffer)
+		{
+			return( nullptr);
+		}
+
+		void* Result;
+
+		if(( Result = allocate( Size)))
+		{
+			if( Size)
+			{
+				memcpy( Result, OldBuffer, Size);
+			}
+		}
+
+		return( Result);
+	}
+
+	char* duplicate( const char* Buffer, size_t Size)
+	{
+		if( !Buffer)
+		{
+			return nullptr;
+		}
+
+		char* Result = static_cast<char*>( allocate( Size + 1));
+
+		if( !Result)
+		{
+			return nullptr;
+		}
+
+		if( Size)
+		{
+			memcpy( Result, Buffer, Size);
+		}
+		Result[Size]= '\0';
+
+		return Result;
+	}
+
+	char* create( size_t length )
+	{
+		char* Result;
+
+		if(( Result = static_cast< char*>( allocate( length + 1))))
+		{
+			*Result = 0;
+		}
+
+		return Result;
+	}
 }
-
-char* create( size_t length )
-{
-    char* Result;
-
-    if(( Result = static_cast< char*>( allocate( length + 1))))
-    {
-        *Result = 0;
-    }
-
-    return Result;
-}
-} // namespace Memory
-} // namespace M
-
-
