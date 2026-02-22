@@ -9,9 +9,7 @@
 #include <stddef.h>
 #include <memory>
 
-namespace M
-{
-namespace Memory
+namespace M::Memory
 {
 	 void outOfMemoryHandler();
 	 void* allocate( size_t Size);
