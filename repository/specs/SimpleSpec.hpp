@@ -19,7 +19,7 @@ struct SimpleSpec {
 
     static constexpr Element documentRoot() { return Element::document; }
 
-    static constexpr std::string_view elementName(Element e) {
+    static constexpr std::string_view elementName(const Element e) {
         switch (e) {
             case Element::functions: return "Functions"sv;
             case Element::function:  return "Function"sv;
@@ -29,7 +29,7 @@ struct SimpleSpec {
         }
     }
 
-    static Element toElement(std::string_view name) {
+    static Element toElement(const std::string_view name) {
         const auto n = utils::lowercaseUntilCamelBoundary(name);
         if (n == "functions"s) return Element::functions;
         if (n == "function"s)  return Element::function;
@@ -38,9 +38,9 @@ struct SimpleSpec {
         return Element::unknown;
     }
 
-    static bool isKnown(Element e) { return e != Element::unknown; }
+    static bool isKnown(const Element e) { return e != Element::unknown; }
 
-    static std::span<Element> allowedChildren(Element p) {
+    static std::span<Element> allowedChildren(const Element p) {
         static Element doc[]  = { Element::functions };
         static Element funcs[] = { Element::function };
         static Element func[]  = { Element::id, Element::source };
