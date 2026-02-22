@@ -60,7 +60,6 @@ private:
     }
 
     bool endElementChar(const char*, const char*, const char*) override {
-        const Element cur = m_elementStack.back();
         m_elementStack.pop_back();
         return true;
     }
