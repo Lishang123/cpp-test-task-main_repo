@@ -8,11 +8,10 @@
 #include <xercesc/util/XMLString.hpp>
 #include "../Misc/Memory.hpp"
 
-#include <stdio.h>
-
 XML_xerces_String::XML_xerces_String()
-                 : m_XMLForm( nullptr )
-                 , m_LocalForm( nullptr )
+                 : m_Transcoder(nullptr)
+                 , m_XMLForm( nullptr )
+				 , m_LocalForm( nullptr )
 {
 
 	// If we have an input of more than 64k, this might fail badly.
@@ -24,7 +23,7 @@ XML_xerces_String::XML_xerces_String()
 }
 
 XML_xerces_String::XML_xerces_String( std::string_view localForm )
-                 : m_XMLForm( nullptr )
+                 : m_Transcoder( nullptr), m_XMLForm( nullptr ), m_LocalForm( nullptr)
 {
 
 	// If we have an input of more than 64k, this might fail badly.
@@ -38,7 +37,7 @@ XML_xerces_String::XML_xerces_String( std::string_view localForm )
 }
 
 XML_xerces_String::XML_xerces_String( const XMLCh* String)
-                 : m_LocalForm( nullptr )
+                 : m_Transcoder( nullptr), m_XMLForm( nullptr), m_LocalForm( nullptr)
 {
 	// If we have an input of more than 64k, this might fail badly.
 	xercesc::XMLTransService::Codes Result;
