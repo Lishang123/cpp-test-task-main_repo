@@ -190,10 +190,6 @@ M_MemoryStream::M_MemoryStream( const TY_Blob* Content)
 {
 }
 
-M_MemoryStream::~M_MemoryStream()
-{
-}
-
 M_MemoryStream& M_MemoryStream::operator =( M_MemoryStream&& src) noexcept {
 	m_UnflushedContent = std::move( src.m_UnflushedContent);
 	m_Content = std::move( src.m_Content);

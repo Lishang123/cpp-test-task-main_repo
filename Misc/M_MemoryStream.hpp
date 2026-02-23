@@ -57,7 +57,7 @@ namespace M
 class  IReadStream
 {
 	public:
-		virtual ~IReadStream() {}
+		virtual ~IReadStream() = default;
 
 		/** Read from buffer from current read position. Returns number of bytes read.
 		  * @param Content Put stuff here.
@@ -119,7 +119,7 @@ class  M_MemoryStream : public M::IReadStream
 		M_MemoryStream( M_MemoryStream&& src) noexcept;
 		M_MemoryStream( const char* String);
 		M_MemoryStream( const TY_Blob* Buffer);
-		virtual ~M_MemoryStream();
+		virtual ~M_MemoryStream() = default;
 
 		M_MemoryStream& operator =( const M_MemoryStream& src) = delete;
 		M_MemoryStream& operator =( M_MemoryStream&& src) noexcept;
