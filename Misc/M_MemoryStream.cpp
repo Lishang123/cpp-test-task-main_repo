@@ -233,14 +233,14 @@ void M_MemoryStream::flush() const
 	for( const auto& fragment : m_UnflushedContent)
 	{
 		const char* content;
-		T_uint64 size = fragment.getContent( &content);
+		const T_uint64 fragmentSize = fragment.getContent( &content);
 
 		if( content)
 		{
-			memcpy( newContent + position, content, size);
+			memcpy( newContent + position, content, fragmentSize);
 		}
 
-		position += size;
+		position += fragmentSize;
 	}
 
 	m_UnflushedContent.clear();
