@@ -10,7 +10,7 @@ namespace M::String
 {
 char* create( size_t Length);
 
-inline std::string_view sv( const char *str ) noexcept
+inline constexpr std::string_view sv( const char *str ) noexcept
 {
     return str ? std::string_view { str } : std::string_view {};
 }
@@ -31,13 +31,13 @@ concept StringType =
     };
 
 [[nodiscard]]
-inline int compare( const StringType auto& lhs, const StringType auto& rhs ) noexcept
+inline constexpr int compare( const StringType auto& lhs, const StringType auto& rhs ) noexcept
 {
     return sv( lhs ).compare( sv( rhs ) );
 }
 
 [[nodiscard]]
-inline int compare( const StringType auto& lhs, const StringType auto& rhs, size_t length ) noexcept
+inline constexpr int compare( const StringType auto& lhs, const StringType auto& rhs, size_t length ) noexcept
 {
     return sv( lhs ).compare( 0, length, sv( rhs ), 0, length );
 }
@@ -57,7 +57,7 @@ inline int compare( const StringType auto& lhs, const StringType auto& rhs, size
  */
 
 [[nodiscard]]
-inline bool equal( const StringType auto& lhs, const StringType auto& rhs ) noexcept
+inline constexpr bool equal( const StringType auto& lhs, const StringType auto& rhs ) noexcept
 {
     // FIXME: At some point we need to stop distinguishing between null-string
     //        and an empty string. For now we have places in the code
@@ -68,7 +68,7 @@ inline bool equal( const StringType auto& lhs, const StringType auto& rhs ) noex
 }
 
 [[nodiscard]]
-inline bool equal( const StringType auto& lhs, const StringType auto& rhs, size_t length ) noexcept
+inline constexpr bool equal( const StringType auto& lhs, const StringType auto& rhs, size_t length ) noexcept
 {
     // FIXME: At some point we need to stop distinguishing between null-string
     //        and an empty string. For now we have places in the code
@@ -84,7 +84,7 @@ inline bool equal( const StringType auto& lhs, const StringType auto& rhs, size_
  * @return true if String is NULL or if it's length is 0.
  */
 [[nodiscard]]
-inline bool empty( const StringType auto &str ) noexcept { return sv( str ).empty(); }
+inline constexpr bool empty( const StringType auto &str ) noexcept { return sv( str ).empty(); }
 
 /**
  * Computes the length of the given string
@@ -92,7 +92,7 @@ inline bool empty( const StringType auto &str ) noexcept { return sv( str ).empt
  * @return The length of the string.
  */
 [[nodiscard]]
-inline size_t length( const StringType auto &str ) noexcept { return sv( str ).length(); }
+inline constexpr size_t length( const StringType auto &str ) noexcept { return sv( str ).length(); }
 
 
 
