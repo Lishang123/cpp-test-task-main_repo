@@ -40,7 +40,7 @@ class XML_xerces_String
 		/** Convert to local form. Use M_String::release() for cleanup.
 		  * @param XMLForm The string in XML form.
 		  */
-		char* convertToLocalForm( const XMLCh* XMLForm);
+		char* convertToLocalForm( const XMLCh* XMLForm) const;
 
 		/** Convert to local form. */
         std::string_view getLocalForm();

@@ -80,7 +80,7 @@ XMLCh* XML_xerces_String::convertToXMLForm( const char* LocalForm)
 	return( xercesc::XMLString::transcode( LocalForm));
 }
 
-char* XML_xerces_String::convertToLocalForm( const XMLCh* XMLForm)
+char* XML_xerces_String::convertToLocalForm( const XMLCh* XMLForm) const
 {
 	// If we have an input of more than 64k, this might fail badly.
 	if( m_Transcoder)
