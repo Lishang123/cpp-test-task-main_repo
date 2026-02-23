@@ -96,12 +96,21 @@ M_MemoryStreamFragment::~M_MemoryStreamFragment()
 	M::Memory::release( m_Data);
 }
 
-M_MemoryStreamFragment& M_MemoryStreamFragment::operator =( M_MemoryStreamFragment&& src)
-{
+M_MemoryStreamFragment& M_MemoryStreamFragment::operator =( M_MemoryStreamFragment&& src) noexcept {
+	// check identity
+	if (this == &src)
+		return *this;
+	// release old memory
+	M::Memory::release( m_Data);
+
 	m_Data = src.m_Data;
-	src.m_Data = nullptr;
 	m_UsedSize = src.m_UsedSize;
 	m_FreeSize = src.m_FreeSize;
+
+	src.m_Data = nullptr;
+	src.m_UsedSize = 0;
+	src.m_FreeSize = 0;
+
 	return *this;
 }
 
