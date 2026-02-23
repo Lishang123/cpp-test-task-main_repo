@@ -48,14 +48,14 @@ class  IReadStream
 		virtual ~IReadStream() {}
 
 		/** Read from buffer from current read position. Returns number of bytes read.
-		  * @param Buffer Put stuff here.
+		  * @param Content Put stuff here.
 		  * @param Size How much you want to read.
 		  */
 		virtual T_uint64 read( char* Content, T_uint64 Size) const = 0;
 
 		/** Get access to internal content.
-		  * @param Buffer Store pointer to buffer here.
-		  * @param Size Store size of buffer here.
+		  * @param content Store pointer to buffer here.
+		  * @param size Store size of buffer here.
 		  */
 		virtual void getContent( const char** content, T_uint64* size = nullptr) const = 0;
 
@@ -131,7 +131,7 @@ class  M_MemoryStream : public M::IReadStream
 		  */
 		void writeConsume( M_MemoryStream &Stream);
 		/** Write the content of this Buffer into the stream.
-		  * @param Buffer Buffer to add to this stream.
+		  * @param Content Buffer to add to this stream.
 		  */
 		void write( const TY_Blob* Content);
 		void write( long Content);
@@ -163,20 +163,20 @@ class  M_MemoryStream : public M::IReadStream
 		void terminate();
 
 		/** Read from buffer from current read position. Returns number of bytes read.
-		  * @param Buffer Put stuff here.
+		  * @param Content Put stuff here.
 		  * @param Size How much you want to read.
 		  */
 		T_uint64 read( char* Content, T_uint64 Size) const;
 
 		/** Get access to internal content.
-		  * @param Buffer Store pointer to buffer here.
+		  * @param Content Store pointer to buffer here.
 		  * @param Size Store size of buffer here.
 		  */
-		void getContent( const char** Content, T_uint64* Size = NULL) const;
+		void getContent( const char** Content, T_uint64* Size = nullptr) const;
 
 		/** Get ownership of internal content. The memory stream will be empty but still usable
 		  * afterwards. Make sure to remove the content with M_Memory::release().
-		  * @param Buffer Store pointer to buffer here.
+		  * @param Content Store pointer to buffer here.
 		  * @param Size Store size of buffer here.
 		  */
 		void detachContent( char** Content, T_uint64* Size = NULL);
