@@ -130,6 +130,8 @@ void M_MemoryStreamFragment::append( const char* Content, T_uint64 Size)
 	}
 	else if( m_FreeSize < Size)
 	{
+		// FIXME: reallocate for every append operation?
+		// reAllocate never returns nullptr
 		m_Data = static_cast< char*>( M::Memory::reAllocate( m_Data, m_UsedSize + Size));
 		memcpy( m_Data + m_UsedSize, Content, Size);
 		m_UsedSize += Size;
@@ -137,7 +139,7 @@ void M_MemoryStreamFragment::append( const char* Content, T_uint64 Size)
 	}
 	else
 	{
-		// the most efficent case
+		// the most efficient case
 		memcpy( m_Data + m_UsedSize, Content, Size);
 		m_UsedSize += Size;
 		m_FreeSize -= Size;
