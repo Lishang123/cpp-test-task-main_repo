@@ -25,7 +25,7 @@ class XML_xerces_String
 		virtual ~XML_xerces_String();
 
 		/** Set local form.
-		  * @param LocalForm The string in local form.
+		  * @param localForm The string in local form.
 		  */
 		void setLocalForm( std::string_view localForm);
 		/** Set XML form.
