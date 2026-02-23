@@ -66,6 +66,9 @@ M_MemoryStreamFragment::M_MemoryStreamFragment( char* Content, T_uint64 Size)
 }
 
 M_MemoryStreamFragment::M_MemoryStreamFragment( const char* Content, T_uint64 Size)
+	: m_Data( nullptr)
+	, m_UsedSize( 0)
+	, m_FreeSize( 0)
 {
 	if( Size < FRAGMENT_SIZE)
 	{
