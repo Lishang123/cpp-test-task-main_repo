@@ -194,8 +194,7 @@ M_MemoryStream::~M_MemoryStream()
 {
 }
 
-M_MemoryStream& M_MemoryStream::operator =( M_MemoryStream&& src)
-{
+M_MemoryStream& M_MemoryStream::operator =( M_MemoryStream&& src) noexcept {
 	m_UnflushedContent = std::move( src.m_UnflushedContent);
 	m_Content = std::move( src.m_Content);
 	m_ReadPosition = src.m_ReadPosition;

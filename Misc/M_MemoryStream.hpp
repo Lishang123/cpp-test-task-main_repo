@@ -116,13 +116,13 @@ class  M_MemoryStream : public M::IReadStream
 	public:
 		M_MemoryStream();
 		M_MemoryStream( const M_MemoryStream& src) = delete;
-		M_MemoryStream( M_MemoryStream&& src);
+		M_MemoryStream( M_MemoryStream&& src) noexcept;
 		M_MemoryStream( const char* String);
 		M_MemoryStream( const TY_Blob* Buffer);
 		virtual ~M_MemoryStream();
 
 		M_MemoryStream& operator =( const M_MemoryStream& src) = delete;
-		M_MemoryStream& operator =( M_MemoryStream&& src);
+		M_MemoryStream& operator =( M_MemoryStream&& src) noexcept;
 
 		/** Flush flushes the fresh and compactifies the internal data structures. */
 		void flush() const;
