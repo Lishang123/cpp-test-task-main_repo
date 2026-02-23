@@ -102,7 +102,7 @@ char* XML_xerces_String::convertToLocalForm( const XMLCh* XMLForm)
 		return( LocalForm);
 	}
 
-	return( NULL);
+	return( nullptr );
 }
 
 std::string_view XML_xerces_String::getLocalForm()
@@ -121,7 +121,7 @@ const XMLCh* XML_xerces_String::getXMLForm()
 	{
 		if( !m_LocalForm)
 		{
-			return( NULL);
+			return( nullptr );
 		}
 
 		m_XMLForm =	convertToXMLForm( m_LocalForm);
