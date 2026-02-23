@@ -37,7 +37,7 @@ class M_MemoryStreamFragment
 		 */
 		M_MemoryStreamFragment( const char* Content, T_uint64 Size);
 		M_MemoryStreamFragment( const M_MemoryStreamFragment& src) = delete;
-		M_MemoryStreamFragment( M_MemoryStreamFragment&& src);
+		M_MemoryStreamFragment( M_MemoryStreamFragment&& src) noexcept;
 		~M_MemoryStreamFragment();
 
 		M_MemoryStreamFragment& operator =( const M_MemoryStreamFragment& src) = delete;

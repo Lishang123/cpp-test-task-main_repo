@@ -83,12 +83,14 @@ M_MemoryStreamFragment::M_MemoryStreamFragment( const char* Content, T_uint64 Si
 	}
 }
 
-M_MemoryStreamFragment::M_MemoryStreamFragment( M_MemoryStreamFragment&& src)
-    : m_Data( src.m_Data)
-    , m_UsedSize( src.m_UsedSize)
-    , m_FreeSize( src.m_FreeSize)
+M_MemoryStreamFragment::M_MemoryStreamFragment( M_MemoryStreamFragment&& src) noexcept
+	: m_Data( src.m_Data)
+	  , m_UsedSize( src.m_UsedSize)
+	  , m_FreeSize( src.m_FreeSize)
 {
 	src.m_Data = nullptr;
+	src.m_UsedSize = 0;
+	src.m_FreeSize = 0;
 }
 
 M_MemoryStreamFragment::~M_MemoryStreamFragment()
