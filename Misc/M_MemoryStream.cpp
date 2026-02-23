@@ -168,11 +168,11 @@ M_MemoryStream::M_MemoryStream()
 {
 }
 
-M_MemoryStream::M_MemoryStream( M_MemoryStream&& src)
-    : m_UnflushedContent( std::move( src.m_UnflushedContent))
-    , m_Content( std::move( src.m_Content))
-    , m_ReadPosition( src.m_ReadPosition)
-    , m_Size( src.m_Size)
+M_MemoryStream::M_MemoryStream( M_MemoryStream&& src) noexcept
+	: m_UnflushedContent( std::move( src.m_UnflushedContent))
+	  , m_Content( std::move( src.m_Content))
+	  , m_ReadPosition( src.m_ReadPosition)
+	  , m_Size( src.m_Size)
 {
 }
 
