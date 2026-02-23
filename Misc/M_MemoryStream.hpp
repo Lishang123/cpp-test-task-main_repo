@@ -191,7 +191,7 @@ class  M_MemoryStream : public M::IReadStream
 		  * @param Content Store pointer to buffer here.
 		  * @param Size Store size of buffer here.
 		  */
-		void detachContent( char** Content, T_uint64* Size = NULL);
+		void detachContent( char** Content, T_uint64* Size = nullptr);
 		/** Get internal buffer. */
 		const TY_Blob* getContent() const;
 		/** Get ownership of internal content. The memory stream will be empty but still usable
