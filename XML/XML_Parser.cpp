@@ -282,6 +282,11 @@ void XML_Parser::endElement( const XMLCh* const URI, const XMLCh* const Name,
 
     if( !m_Result) return;
 
+    // guard empty stack
+    if (m_Callstack.empty()) {
+        m_Result = false;
+        return;
+    }
     auto& el = m_Callstack.back();
     endCharacters();
 
