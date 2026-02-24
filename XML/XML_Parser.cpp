@@ -542,9 +542,20 @@ bool XML_Parser::getAttributeBool( const xercesc::Attributes &attributes, std::s
     return {};
 }
 
-bool XML_Parser::getAttributeBool( const xercesc::Attributes &attributes, std::string_view name )
+std::optional<bool> XML_Parser::getAttributeBool( const xercesc::Attributes &attributes, std::string_view name )
 {
-    bool dummy{};
-    return getAttributeBool( attributes, name, dummy );
+    const auto *xmlValue = attributes.getValue( XML_xerces_String { name }.getXMLForm() );
+    if (!xmlValue) // value not found
+        return std::nullopt;
+
+    static constexpr std::array<XMLCh, 5> true_ {{ 't', 'r', 'u', 'e', '\0' }};
+    if( xercesc::XMLString::compareString( xmlValue, true_.data() ) == 0 )
+        return true;
+
+    static constexpr std::array<XMLCh, 6> false_ {{ 'f', 'a', 'l', 's', 'e', '\0' }};
+    if( xercesc::XMLString::compareString( xmlValue, false_.data() ) == 0 )
+        return true;
+
+    return std::nullopt; // value unequal 'true' or 'false'
 }
 

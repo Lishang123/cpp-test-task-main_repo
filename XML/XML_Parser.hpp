@@ -178,7 +178,7 @@ public:
      */
     static bool getAttributeBool(const xercesc::Attributes &attributes, std::string_view name, bool &exists);
 
-    static bool getAttributeBool(const xercesc::Attributes &attributes, std::string_view name);
+    static std::optional<bool>  getAttributeBool(const xercesc::Attributes &attributes, std::string_view name);
 
 };
 
