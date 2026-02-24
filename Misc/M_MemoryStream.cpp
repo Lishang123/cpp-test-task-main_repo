@@ -256,6 +256,7 @@ void M_MemoryStream::write( long Content)
 {
 	char buffer[21];
 	int size = snprintf( buffer, 21, "%ld", Content);
+	//write( buffer, size); (original)
 	if (size <= 0) return;
 	// just in case size > 20
 	T_uint64 sizeToWrite = static_cast<T_uint64>(std::min<int>(size, sizeof(buffer) - 1));
