@@ -211,10 +211,13 @@ const char* XML_Parser::m_RemoveXMLDeclaration( const char *Buffer, size_t Buffe
 {
     const char* NoWhitespaceBuffer = Buffer;
     //skipping leading whitespaces
-    while( *NoWhitespaceBuffer && std::isspace(*NoWhitespaceBuffer))
+    // "the behavior of std::isspace is undefined if the argument's value
+    // is neither representable as unsigned char nor equal to EOF. --cppreference
+    while( *NoWhitespaceBuffer && std::isspace(static_cast<unsigned char>(*NoWhitespaceBuffer)))
     {
         ++NoWhitespaceBuffer;
     }
+    // if there is still enough space in the buffer
     if( ( BufferSize -= NoWhitespaceBuffer - Buffer) > 5)
     {
         if( NoWhitespaceBuffer[0] == '<'
@@ -224,9 +227,11 @@ const char* XML_Parser::m_RemoveXMLDeclaration( const char *Buffer, size_t Buffe
             && NoWhitespaceBuffer[4] == 'l')
         {
             NoWhitespaceBuffer += 5;
-            while( --BufferSize >= 2 && NoWhitespaceBuffer[0] != '?' && NoWhitespaceBuffer[1] != '>')
+            // scan until "?>" is found
+            while(BufferSize >= 2 && !(NoWhitespaceBuffer[0] == '?' && NoWhitespaceBuffer[1] == '>'))
             {
                 ++NoWhitespaceBuffer;
+                --BufferSize;
             }
             if( BufferSize >= 2)
             {
