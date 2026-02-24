@@ -61,11 +61,13 @@ static Parser makeParser()
     return Parser{};
 }
 
-class AttrLongTestParserLegacy final : public XML_Parser {
+class AttrTestParserLegacy final : public XML_Parser {
 public:
-    long attrValue = 0;
+    long attrValueLong = 0;
+    bool attrValueBool = false;
     bool foundTag = false;
     bool attrLongExists = false;
+    bool attrBoolExists = false;
 
     bool startElementChar(const char* /*uri*/,
                           const char* /*localName*/,
@@ -74,17 +76,20 @@ public:
     {
         if (std::string_view{qName} == "Functions") {
             foundTag = true;
-            attrValue = getAttributeLong(attrs, "count", attrLongExists);
+            attrValueLong = getAttributeLong(attrs, "count", attrLongExists);
+            attrValueBool = getAttributeBool(attrs, "optional", attrBoolExists);
         }
         return true;
     }
 };
 
-class AttrLongTestParserRefactored final : public XML_Parser {
+class AttrTestParserRefactored final : public XML_Parser {
 public:
-    long attrValue = 0;
-    bool foundTag{};
-    bool attrLongExists{};
+    long attrValueLong = 0;
+    bool attrValueBool = false;
+    bool foundTag = false;
+    bool attrLongExists = false;
+    bool attrBoolExists = false;
 
     bool startElementChar(const char* /*uri*/,
                           const char* /*localName*/,
@@ -93,17 +98,24 @@ public:
     {
         if (std::string_view{qName} == "Functions") {
             foundTag = true;
-            auto res = getAttributeLongOptional(attrs, "count");
-            if (res.has_value()) {
+            auto resLong = getAttributeLongOptional(attrs, "count");
+            auto resBool = getAttributeBool(attrs, "optional");
+
+            if (resLong.has_value()) {
                 attrLongExists = true;
-                attrValue = res.value();
+                attrValueLong = resLong.value();
+            }
+
+            if (resBool.has_value()) {
+                attrBoolExists = true;
+                attrValueBool = resBool.value();
             }
         }
         return true;
     }
 };
 
-TEMPLATE_TEST_CASE("XML_Parser accepts valid attribute value", "[xml][parser]", AttrLongTestParserLegacy, AttrLongTestParserRefactored) {
+TEMPLATE_TEST_CASE("XML_Parser accepts valid attribute value", "[xml][parser][attr][long]", AttrTestParserLegacy, AttrTestParserRefactored) {
     ensure_xerces();
 
     const char* xml =
@@ -115,10 +127,10 @@ TEMPLATE_TEST_CASE("XML_Parser accepts valid attribute value", "[xml][parser]", 
     parser.parseBlob(&blob);
     REQUIRE(parser.parseBlob(&blob));
     REQUIRE(parser.attrLongExists);
-    REQUIRE(parser.attrValue == 1000);
+    REQUIRE(parser.attrValueLong == 1000);
 }
 
-TEMPLATE_TEST_CASE("XML_Parser ignores no attribute", "[xml][parser]", AttrLongTestParserLegacy, AttrLongTestParserRefactored) {
+TEMPLATE_TEST_CASE("XML_Parser ignores no attribute", "[xml][parser][attr][long]", AttrTestParserLegacy, AttrTestParserRefactored) {
     ensure_xerces();
 
     const char* xml =
@@ -126,14 +138,14 @@ TEMPLATE_TEST_CASE("XML_Parser ignores no attribute", "[xml][parser]", AttrLongT
 
     TY_Blob blob(xml, std::strlen(xml));
 
-    AttrLongTestParserLegacy parser;
+    AttrTestParserLegacy parser;
     parser.parseBlob(&blob);
     REQUIRE(parser.parseBlob(&blob));
     REQUIRE_FALSE(parser.attrLongExists);
-    REQUIRE_FALSE(parser.attrValue);
+    REQUIRE_FALSE(parser.attrValueLong);
 }
 
-TEMPLATE_TEST_CASE("XML_Parser rejects invalid attribute value", "[xml][parser]", AttrLongTestParserLegacy, AttrLongTestParserRefactored) {
+TEMPLATE_TEST_CASE("XML_Parser rejects invalid attribute value", "[xml][parser][attr][long]", AttrTestParserLegacy, AttrTestParserRefactored) {
     ensure_xerces();
 
     const char* xml =
@@ -145,10 +157,10 @@ TEMPLATE_TEST_CASE("XML_Parser rejects invalid attribute value", "[xml][parser]"
     parser.parseBlob(&blob);
     REQUIRE(parser.parseBlob(&blob));
     REQUIRE_FALSE(parser.attrLongExists); // fail for original implementation
-    REQUIRE_FALSE(parser.attrValue);
+    REQUIRE_FALSE(parser.attrValueLong);
 }
 
-TEMPLATE_TEST_CASE("XML_Parser ignores empty attribute value", "[xml][parser]", AttrLongTestParserLegacy, AttrLongTestParserRefactored) {
+TEMPLATE_TEST_CASE("XML_Parser ignores empty attribute value", "[xml][parser][attr][long]", AttrTestParserLegacy, AttrTestParserRefactored) {
     ensure_xerces();
 
     const char* xml =
@@ -160,7 +172,51 @@ TEMPLATE_TEST_CASE("XML_Parser ignores empty attribute value", "[xml][parser]", 
     parser.parseBlob(&blob);
     REQUIRE(parser.parseBlob(&blob));
     REQUIRE_FALSE(parser.attrLongExists); // fail for original implementation
-    REQUIRE_FALSE(parser.attrValue);
+    REQUIRE_FALSE(parser.attrValueLong);
 }
 
+TEMPLATE_TEST_CASE("XML_Parser parses boolean attribute", "[xml][parser][attr][bool]", AttrTestParserLegacy, AttrTestParserRefactored) {
+    ensure_xerces();
+
+    const char* xml =
+        R"(<Functions optional="true"></Functions>)";
+
+    TY_Blob blob(xml, std::strlen(xml));
+
+    auto parser = makeParser<TestType>();
+    parser.parseBlob(&blob);
+    REQUIRE(parser.parseBlob(&blob));
+    REQUIRE(parser.attrBoolExists);
+    REQUIRE(parser.attrValueBool);
+}
+
+TEMPLATE_TEST_CASE("XML_Parser parses empty (boolean) attribute", "[xml][parser][attr][bool]", AttrTestParserLegacy, AttrTestParserRefactored) {
+    ensure_xerces();
+
+    const char* xml =
+        R"(<Functions optional=""></Functions>)";
+
+    TY_Blob blob(xml, std::strlen(xml));
+
+    auto parser = makeParser<TestType>();
+    parser.parseBlob(&blob);
+    REQUIRE(parser.parseBlob(&blob));
+    REQUIRE_FALSE(parser.attrBoolExists);
+    REQUIRE_FALSE(parser.attrValueBool);
+}
+
+TEMPLATE_TEST_CASE("XML_Parser parses invalid boolean attribute", "[xml][parser][attr][bool]", AttrTestParserLegacy, AttrTestParserRefactored) {
+    ensure_xerces();
+
+    const char* xml =
+        R"(<Functions optional="123"></Functions>)";
+
+    TY_Blob blob(xml, std::strlen(xml));
+
+    auto parser = makeParser<TestType>();
+    parser.parseBlob(&blob);
+    REQUIRE(parser.parseBlob(&blob));
+    REQUIRE_FALSE(parser.attrBoolExists);
+    REQUIRE_FALSE(parser.attrValueBool);
+}
 
