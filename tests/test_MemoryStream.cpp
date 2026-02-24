@@ -93,47 +93,47 @@ TEST_CASE("M_MemoryStreamFragment: move assignment operator", "[misc][streamFrag
 TEST_CASE("M_MemoryStream::write(const char* Content, T_uint64 Size) reuses last unflushed fragment", "[misc][memoryStream]")
 {
 
-    M_MemoryStream s;
+    M_MemoryStream stream;
 
     // First write: Size < FRAGMENT_SIZE => new fragment allocates FRAGMENT_SIZE*2
     constexpr T_uint64 firstSize = FRAGMENT_SIZE - 1;
-    std::string a(firstSize, 'A');
-    s.write(a.data(), firstSize);
+    std::string str_a(firstSize, 'A');
+    stream.write(str_a.data(), firstSize);
 
-    REQUIRE(s.m_UnflushedContent.size() == 1);
+    REQUIRE(stream.m_UnflushedContent.size() == 1);
 
-    const T_uint64 freeSize = s.m_UnflushedContent.back().getFreeSize();
+    const T_uint64 freeSize = stream.m_UnflushedContent.back().getFreeSize();
     REQUIRE(freeSize == FRAGMENT_SIZE*2 - firstSize);
 
     // Second write: try to exactly fill the free space in the first fragment
-    std::string b(freeSize, 'N');
-    s.write(b.data(), freeSize);
+    std::string str_b(freeSize, 'N');
+    stream.write(str_b.data(), freeSize);
 
     // In the original implementation, a new fragment is created even if the old fragment can store the new content
-    REQUIRE(s.m_UnflushedContent.size() == 1);
+    REQUIRE(stream.m_UnflushedContent.size() == 1);
 
     // The result after flush should be the correct concatenation
-    const char* p = nullptr;
-    T_uint64 n = 0;
-    s.getContent(&p, &n); // call flush
+    const char* res_ptr = nullptr;
+    T_uint64 res_size = 0;
+    stream.getContent(&res_ptr, &res_size); // call flush
 
-    REQUIRE(n == firstSize + freeSize);
-    REQUIRE(std::string_view{p, firstSize} == std::string_view{a});
-    REQUIRE(std::string_view{p + firstSize, freeSize} == std::string_view{b});
+    REQUIRE(res_size == firstSize + freeSize);
+    REQUIRE(std::string_view{res_ptr, firstSize} == std::string_view{str_a});
+    REQUIRE(std::string_view{res_ptr + firstSize, freeSize} == std::string_view{str_b});
 }
 
 
 TEST_CASE("M_MemoryStream::write(long)","[misc][memoryStream]")
 {
-    M_MemoryStream s;
+    M_MemoryStream stream;
 
     SECTION("zero")
     {
-        s.write(0L);
+        stream.write(0L);
 
         const char* p = nullptr;
         T_uint64 n = 0;
-        s.getContent(&p, &n);
+        stream.getContent(&p, &n);
 
         REQUIRE(p != nullptr);
         REQUIRE(n == std::to_string(0L).size());
@@ -142,39 +142,39 @@ TEST_CASE("M_MemoryStream::write(long)","[misc][memoryStream]")
 
     SECTION("positive")
     {
-        const long v = 42L;
-        s.write(v);
+        constexpr long val = 42L;
+        stream.write(val);
 
         const char* p = nullptr;
         T_uint64 n = 0;
-        s.getContent(&p, &n);
+        stream.getContent(&p, &n);
 
-        const std::string expected = std::to_string(v);
+        const std::string expected = std::to_string(val);
         REQUIRE(n == expected.size());
         REQUIRE(std::string_view{p, static_cast<size_t>(n)} == expected);
     }
 
     SECTION("negative")
     {
-        const long v = -42L;
-        s.write(v);
+        constexpr  long val = -42L;
+        stream.write(val);
 
         const char* p = nullptr;
         T_uint64 n = 0;
-        s.getContent(&p, &n);
+        stream.getContent(&p, &n);
 
-        const std::string expected = std::to_string(v);
+        const std::string expected = std::to_string(val);
         REQUIRE(n == expected.size());
         REQUIRE(std::string_view{p, static_cast<size_t>(n)} == expected);
     }
 
     SECTION("LONG_MAX")
     {
-        s.write(LONG_MAX);
+        stream.write(LONG_MAX);
 
         const char* p = nullptr;
         T_uint64 n = 0;
-        s.getContent(&p, &n);
+        stream.getContent(&p, &n);
 
         const std::string expected = std::to_string(LONG_MAX);
         REQUIRE(n == expected.size());
@@ -183,11 +183,11 @@ TEST_CASE("M_MemoryStream::write(long)","[misc][memoryStream]")
 
     SECTION("LONG_MIN")
     {
-        s.write(LONG_MIN);
+        stream.write(LONG_MIN);
 
         const char* p = nullptr;
         T_uint64 n = 0;
-        s.getContent(&p, &n);
+        stream.getContent(&p, &n);
 
         const std::string expected = std::to_string(LONG_MIN);
         REQUIRE(n == expected.size());
@@ -196,12 +196,12 @@ TEST_CASE("M_MemoryStream::write(long)","[misc][memoryStream]")
 
     SECTION("no embedded NULs are written")
     {
-        const long v = 1002003L;
-        s.write(v);
+        constexpr long val = 1002003L;
+        stream.write(val);
 
         const char* p = nullptr;
         T_uint64 n = 0;
-        s.getContent(&p, &n);
+        stream.getContent(&p, &n);
 
         for (size_t i = 0; i < static_cast<size_t>(n); ++i)
             REQUIRE(p[i] != '\0');
