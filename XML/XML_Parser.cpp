@@ -207,7 +207,7 @@ bool XML_Parser::m_Parse( const char* Buffer, size_t BufferSize)
     return false;
 }
 
-const char *XML_Parser::m_RemoveXMLDeclaration( const char *Buffer, size_t BufferSize)
+const char* XML_Parser::m_RemoveXMLDeclaration( const char *Buffer, size_t BufferSize)
 {
     const char* NoWhitespaceBuffer = Buffer;
     //skipping leading whitespaces
