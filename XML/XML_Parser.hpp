@@ -42,7 +42,7 @@ private:
 
     M_MemoryStream m_CharacterBuffer;
 
-/** xerces DefaultHandler interface. */
+    /** xerces DefaultHandler interface. */
     void startElement(const XMLCh *const URI, const XMLCh *const LocalName,
                               const XMLCh *const QName,
                               const xercesc::Attributes &CurrentAttributes) override;
@@ -70,18 +70,24 @@ private:
     void m_errorMessage(const xercesc::SAXParseException &E, const char *Code, const char *Description);
 
 protected:
-    bool m_UsingXOP;
-    bool m_CurrentCharactersArePlainBinaryData;
+    bool m_UsingXOP; //TODO: never read, only assigned.
+    bool m_CurrentCharactersArePlainBinaryData; //TODO: never read, only assigned.
 
-/**
- * Parse prepared character buffer
- * @param Buffer Character buffer to parse
- * @param BufferSize How many characters are there in the buffer
- * @return If parsing succeeded
- */
+    /**
+     * Parse prepared character buffer
+     * @param Buffer Character buffer to parse
+     * @param BufferSize How many characters are there in the buffer
+     * @return If parsing succeeded
+     */
     virtual bool m_Parse(const char *Buffer, size_t BufferSize);
 
-    const char *m_RemoveXMLDeclaration(const char *Buffer, size_t BufferSize = -1 );
+    /**
+     * Skip past the XML declaration at the beginning of a buffer
+     * @param Buffer
+     * @param BufferSize
+     * @return A pointer to where the real XML content starts.
+     */
+    static const char* m_RemoveXMLDeclaration(const char *Buffer, size_t BufferSize = -1 );
 
 public:
 
@@ -89,50 +95,50 @@ public:
 
     ~XML_Parser() override;
 
-/** Start of a new element. */
+    /** Start of a new element. */
     virtual bool startElementChar(const char *URI, const char *LocalName, const char *QName,
                                   const xercesc::Attributes &CurrentAttributes);
 
-/** End of the current element. */
+    /** End of the current element. */
     virtual bool endElementChar(const char *URI, const char *LocalName, const char *QName);
 
-/** Character part of the current element. */
+    /** Character part of the current element. */
     virtual bool charactersChar(const char *URI, const char *LocalName, const char *QName,
                                 const char *Chars, const unsigned int Length);
 
-/** A new prefix mapping occurs. */
+    /** A new prefix mapping occurs. */
     virtual bool startPrefixMappingChar(const char *Prefix, const char *URI);
 
-/** An old prefix mapping vanishes. */
+    /** An old prefix mapping vanishes. */
     virtual bool endPrefixMappingChar(const char *Prefix);
 
-/** The parser want's to tell us that an error ocurred.
-  * @param message The message describing what happened. It's yours, so delete it when
-  * you're done.
-  */
+    /** The parser want's to tell us that an error ocurred.
+      * @param message The message describing what happened. It's yours, so delete it when
+      * you're done.
+      */
     virtual void errorMessage(const M_SystemMessage &message);
 
     M_SystemMessage systemMessageFromException(const xercesc::SAXParseException &E,
                                                const char *Code,
                                                const char *errorLevel);
 
-/** Parse buffer.
-  * @param Buffer Buffer to parse.
-  */
+    /** Parse buffer.
+      * @param Buffer Buffer to parse.
+      */
     virtual bool parseBlob(const TY_Blob *Buffer);
 
-/** Set parser feature
-  * See http://xml.apache.org/xerces-c/program-sax2.html#SAX2Features
-  * @param Name Name of the feature
-  * @param Value true or false to enable/disable feature
-  */
+    /** Set parser feature
+      * See http://xml.apache.org/xerces-c/program-sax2.html#SAX2Features
+      * @param Name Name of the feature
+      * @param Value true or false to enable/disable feature
+      */
     void setOption(const char *Name, bool Value);
 
-/** Set parser property
-  * See http://xml.apache.org/xerces-c/program-sax2.html#SAX2Properties
-  * @param Name Name of the property
-  * @param Value String to set the property
-  */
+    /** Set parser property
+      * See http://xml.apache.org/xerces-c/program-sax2.html#SAX2Properties
+      * @param Name Name of the property
+      * @param Value String to set the property
+      */
     void setOption(const char *Name, const char *Value);
 
     void setIgnoreXMLDeclaration(bool Ignore);
@@ -143,19 +149,18 @@ public:
 
     void restoreDefaultEntityExpansionLimit();
 
-/** Disable entity/DTD/schema resolver.
- * If you don't trust the XML (like SOAP service) it is a good idea
- * to disable it because of security vulnerability
- * https://www.owasp.org/index.php/XML_External_Entity_(XXE)_Processing
- */
+    /** Disable entity/DTD/schema resolver.
+     * If you don't trust the XML (like SOAP service) it is a good idea
+     * to disable it because of security vulnerability
+     * https://www.owasp.org/index.php/XML_External_Entity_(XXE)_Processing
+     */
     void disableEntityResolver();
 
     using xercesc::DefaultHandler::resolveEntity;
 
     xercesc::InputSource *resolveEntity(xercesc::XMLResourceIdentifier *resourceIdentifier) override;
 
-    override;
-
+    //TODO: rewrite using std::option
     static ST_String getAttributeValue(const xercesc::Attributes &attributes, std::string_view name);
 
     static long getAttributeLong(const xercesc::Attributes &attributes, std::string_view name, bool &exists);
