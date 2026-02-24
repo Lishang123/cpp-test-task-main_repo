@@ -88,6 +88,31 @@ TEST_CASE("M_MemoryStreamFragment: move assignment operator", "[misc][streamFrag
     REQUIRE(ptr2 == nullptr);
 }
 
+TEST_CASE("M_MemoryStreamFragment: append exact free size", "[misc][streamFragment]")
+{
+    constexpr T_uint64 first_size = FRAGMENT_SIZE - 1;
+    const std::string str_1(first_size, 'A');
+
+    M_MemoryStreamFragment fragment(str_1.data(), first_size);
+    const T_uint64 free_size = fragment.getFreeSize();
+    REQUIRE(free_size  == FRAGMENT_SIZE + 1);
+
+    // append exactly free space
+    std::string str_2(free_size, 'B');
+    fragment.append(str_2.data(), free_size);
+
+    const char* p = nullptr;
+    const T_uint64 total = fragment.getContent(&p);
+
+    REQUIRE(total == first_size + free_size);
+    REQUIRE(fragment.getFreeSize() == 0);
+
+    REQUIRE(std::string_view{p, static_cast<size_t>(first_size)} ==
+            std::string_view{str_1});
+    REQUIRE(std::string_view{p + first_size, static_cast<size_t>(free_size)} ==
+            std::string_view{str_2});
+}
+
 /* ------ M_MemoryStream -------- */
 
 TEST_CASE("M_MemoryStream::write(const char* Content, T_uint64 Size) reuses last unflushed fragment", "[misc][memoryStream]")
@@ -96,18 +121,18 @@ TEST_CASE("M_MemoryStream::write(const char* Content, T_uint64 Size) reuses last
     M_MemoryStream stream;
 
     // First write: Size < FRAGMENT_SIZE => new fragment allocates FRAGMENT_SIZE*2
-    constexpr T_uint64 firstSize = FRAGMENT_SIZE - 1;
-    std::string str_a(firstSize, 'A');
-    stream.write(str_a.data(), firstSize);
+    constexpr T_uint64 first_size = FRAGMENT_SIZE - 1;
+    std::string str_a(first_size, 'A');
+    stream.write(str_a.data(), first_size);
 
     REQUIRE(stream.m_UnflushedContent.size() == 1);
 
-    const T_uint64 freeSize = stream.m_UnflushedContent.back().getFreeSize();
-    REQUIRE(freeSize == FRAGMENT_SIZE*2 - firstSize);
+    const T_uint64 free_size = stream.m_UnflushedContent.back().getFreeSize();
+    REQUIRE(free_size == FRAGMENT_SIZE*2 - first_size);
 
     // Second write: try to exactly fill the free space in the first fragment
-    std::string str_b(freeSize, 'N');
-    stream.write(str_b.data(), freeSize);
+    std::string str_b(free_size, 'N');
+    stream.write(str_b.data(), free_size);
 
     // In the original implementation, a new fragment is created even if the old fragment can store the new content
     REQUIRE(stream.m_UnflushedContent.size() == 1);
@@ -117,9 +142,9 @@ TEST_CASE("M_MemoryStream::write(const char* Content, T_uint64 Size) reuses last
     T_uint64 res_size = 0;
     stream.getContent(&res_ptr, &res_size); // call flush
 
-    REQUIRE(res_size == firstSize + freeSize);
-    REQUIRE(std::string_view{res_ptr, firstSize} == std::string_view{str_a});
-    REQUIRE(std::string_view{res_ptr + firstSize, freeSize} == std::string_view{str_b});
+    REQUIRE(res_size == first_size + free_size);
+    REQUIRE(std::string_view{res_ptr, first_size} == std::string_view{str_a});
+    REQUIRE(std::string_view{res_ptr + first_size, free_size} == std::string_view{str_b});
 }
 
 
