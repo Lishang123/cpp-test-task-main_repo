@@ -30,6 +30,14 @@ void missingAttribute( std::string_view element, std::string_view attribute,
                        std::string_view repo );
 
 /**
+* Return a list of string views to string representation.
+* @param list a list of string views
+* @return string representation of a list in form of <br>
+* [element 1, element 2, ...]
+*/
+std::string listToString(const std::vector<std::string_view>& list);
+
+/**
  * Converts the leading uppercase prefix of a string to lowercase.
  *
  * This function lowercases:
