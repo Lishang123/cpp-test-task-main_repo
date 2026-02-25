@@ -81,8 +81,7 @@ ST_String& ST_String::operator=( ST_String&& rhs)
  noexcept {
 	if( this != &rhs)
 	{
-		consume( rhs.m_String);
-		rhs.m_String = nullptr;
+		consume( std::exchange(rhs.m_String, nullptr));
 	}
 
 	return *this;
