@@ -11,7 +11,7 @@ TEST_CASE("ST_String: default is empty/null", "[String][st_string]")
     REQUIRE(s.view().empty());
 }
 
-TEST_CASE("ST_String: constructs from C string")
+TEST_CASE("ST_String: constructs from C string", "[String][st_string]")
 {
     const ST_String s("hello");
     REQUIRE_FALSE(s.isEmpty());
@@ -21,7 +21,7 @@ TEST_CASE("ST_String: constructs from C string")
 }
 
 
-TEST_CASE("ST_String: constructs from string_view")
+TEST_CASE("ST_String: constructs from string_view", "[String][st_string]")
 {
     std::string_view sv = "hello";
     ST_String s(sv);
