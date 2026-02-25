@@ -99,3 +99,16 @@ TEST_CASE("ST_String: move constructor", "[String][st_string]")
     REQUIRE(src.isEmpty());
     REQUIRE(src.view().empty());
 }
+
+TEST_CASE("ST_String: set reuses buffer", "[String][st_string]")
+{
+    ST_String s("abcdefg");
+    const char* p0 = s.c_str();
+    REQUIRE(p0 != nullptr);
+
+    s.set("abc", 3);
+
+    REQUIRE(s.view() == "abc");
+    // no reallocation if new_length <= old_length
+    REQUIRE(s.c_str() == p0);
+}
