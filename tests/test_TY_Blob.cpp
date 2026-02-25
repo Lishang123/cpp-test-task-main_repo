@@ -5,6 +5,7 @@
 #include <array>
 
 #include "../Types/TY_Blob.hpp"
+#include "../Misc/Memory.hpp"
 
 using namespace std::literals;
 
@@ -84,4 +85,26 @@ TEST_CASE("TY_Blob: setSize padding", "[Types][TY_Blob]")
     const auto v = blob_view(blob);
     REQUIRE(v.size() == 5);
     REQUIRE(v == "abXXX"sv);
+}
+
+TEST_CASE("TY_Blob: detachContent transfers ownership", "[Types][TY_Blob]")
+{
+    TY_Blob blob("data");
+    REQUIRE(blob.getSize() == 4);
+
+    char* raw = nullptr;
+    T_uint64 n = 0;
+    blob.detachContent(&raw, &n);
+
+    // check new ownership
+    REQUIRE(raw != nullptr);
+    REQUIRE(n == 4);
+    REQUIRE(std::string_view(raw, static_cast<size_t>(n)) == "data"sv);
+
+    // blob should now be empty
+    REQUIRE(blob.getSize() == 0);
+    REQUIRE(blob.getContent() == nullptr);
+
+    // must free according to docs
+    M::Memory::release(raw);
 }
