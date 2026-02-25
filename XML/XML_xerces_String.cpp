@@ -194,7 +194,8 @@ int XML_xerces_String::compare( const char* LocalForm)
 	if (!LocalForm) // non-null self vs null input
 		return 1;
 
-	return( strcmp( m_LocalForm, LocalForm));
+	//return( strcmp( m_LocalForm, LocalForm));
+	return std::string_view(self).compare(LocalForm);
 }
 
 int XML_xerces_String::compare( const XMLCh* XMLForm)
