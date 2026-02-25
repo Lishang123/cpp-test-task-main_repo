@@ -151,8 +151,7 @@ void TY_Blob::detachContent( char** content, T_uint64* size)
 	// reset();
 }
 
-	reset();
-}
+
 
 T_uint64 TY_Blob::copyContent( char* buffer, T_uint64 offset, T_uint64 size) const
 {
