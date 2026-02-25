@@ -94,7 +94,7 @@ const char* ST_String::c_str() const noexcept
 
 std::string_view ST_String::view() const noexcept
 {
-	return c_str() ? c_str() : std::string_view{};
+	return m_String ? std::string_view{m_String} : std::string_view{};
 }
 
 bool ST_String::isEmpty() const
