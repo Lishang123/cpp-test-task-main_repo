@@ -4,6 +4,7 @@ add_executable(unit_tests
         test_utils.cpp
         test_string_generics.cpp
         test_ST_String.cpp
+        test_xerces_string.cpp
         test_MemoryStream.cpp
         test_TY_Blob.cpp
         test_XML_Parser.cpp
