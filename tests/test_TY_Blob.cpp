@@ -108,3 +108,21 @@ TEST_CASE("TY_Blob: detachContent transfers ownership", "[Types][TY_Blob]")
     // must free according to docs
     M::Memory::release(raw);
 }
+
+TEST_CASE("TY_Blob: append", "[Types][TY_Blob]")
+{
+    TY_Blob blob("abc");
+
+    // ignore empty with positive size
+    blob.append(nullptr, 10);
+    REQUIRE(blob_view(blob) == "abc"sv);
+
+    // ignore no empty with zero size
+    blob.append("nnn", 0);
+    REQUIRE(blob_view(blob) == "abc"sv);
+
+    // normal append
+    blob.append("d", 1);
+    REQUIRE(blob.getSize() == 4);
+    REQUIRE(blob_view(blob) == "abcd"sv);
+}
