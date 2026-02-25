@@ -53,6 +53,38 @@ TEST_CASE("Memory: outOfMemoryHandler throws std::bad_alloc", "[Misc][Memory]")
     REQUIRE_THROWS_AS( M::Memory::outOfMemoryHandler(), std::bad_alloc);
 }
 
+TEST_CASE("Memory: duplicate(const char*, size_t) returns NUL terminated", "[Misc][Memory]")
+{
+    constexpr char src[3] = {'A','A','A'};
+    constexpr size_t n = 3;
+
+    char* dest = duplicate(src, n);
+    REQUIRE(dest != nullptr);
+    REQUIRE(dest != src);
+
+    REQUIRE(std::memcmp(dest, src, n) == 0);
+    REQUIRE(dest[n] == '\0'); // must be NUL terminated
+    REQUIRE(std::strlen(dest) == n);
+
+    release(dest);
+}
+
+TEST_CASE("Memory: duplicate(const void*, size_t) performs deep copy", "[Misc][Memory]")
+{
+    unsigned char src[5] = {1,1,1,1,1};
+
+    void* dest = duplicate(static_cast<const void *>(src), sizeof(src));
+    REQUIRE(dest != nullptr);
+    REQUIRE(dest != src);
+
+    REQUIRE(std::memcmp(dest, src, sizeof(src)) == 0);
+
+    // after changing source, dest must not change
+    src[0] = 2;
+    REQUIRE(static_cast<unsigned char*>(dest)[0] == 1);
+    release(dest);
+}
+
 TEST_CASE("Memory: release(nullptr) is safe", "[Misc][Memory]")
 {
     release(nullptr);
