@@ -46,3 +46,30 @@ TEST_CASE("TY_Blob: move assignment", "[Types][TY_Blob]")
     REQUIRE(src.getSize() == 0);
     REQUIRE(src.getContent() == nullptr);
 }
+
+TEST_CASE("TY_Blob: copyContent", "[Types][TY_Blob]")
+{
+    const TY_Blob blob("abcdef");
+
+    std::array<char, 10> out{};
+    out.fill('N');
+
+    // request more than available from offset 4 -> only 2 bytes ("ef")
+    const auto copied = blob.copyContent(out.data(),  4,  100);
+    REQUIRE(copied == 2);
+    REQUIRE(std::string_view(out.data(), copied) == "ef"sv);
+}
+
+TEST_CASE("TY_Blob: copyContent unsigned underflow", "[Types][TY_Blob]")
+{
+    const TY_Blob blob("abcd");
+    REQUIRE(blob.getSize() == 4);
+
+    std::array<char, 8> out{};
+    out.fill('A'); // sentinel pattern
+
+    // offset beyond end -> 0 (where legacy code underflows!)
+    REQUIRE(blob.copyContent(out.data(), 999, 2) == 0);
+    for (const char c : out) REQUIRE(c == 'A');
+}
+
