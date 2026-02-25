@@ -12,8 +12,9 @@
 #include <string>
 #include <vector>
 
+#include "catch2/generators/catch_generators.hpp"
+
 namespace fs = std::filesystem;
-namespace rpl = functions::repository::replace;
 
 // Initialize Xerces
 struct XercesGuard {
@@ -46,6 +47,11 @@ static std::string slurp(const fs::path& p) {
 TEST_CASE("FUSReplaceReader parses tabfiles/replace.tab", "[repository][replace]") {
     ensure_xerces();
 
+    auto reader = GENERATE(
+        &functions::repository::replace::readRepo_legacy,
+        &functions::repository::replace::readRepo
+    );
+    
     const fs::path simple_path = fs::path(PROJECT_SOURCE_DIR) / "tabfiles" / "replace.tab";
     // parse the XML to string.
     const std::string xml = slurp(simple_path);
@@ -53,7 +59,7 @@ TEST_CASE("FUSReplaceReader parses tabfiles/replace.tab", "[repository][replace]
     // TY_Blob stores pointer+size (it copies here)
     TY_Blob blob(xml.data(), xml.size());
 
-    auto functions = rpl::readRepo(blob, "replace.tab");
+    auto functions = reader(blob, "replace.tab");
 
     REQUIRE(functions.size() == 2);
 
@@ -67,6 +73,10 @@ TEST_CASE("FUSReplaceReader parses tabfiles/replace.tab", "[repository][replace]
 TEST_CASE("FUSReplaceReader parses replace doc", "[repository][replace]") {
     ensure_xerces();
 
+    auto reader = GENERATE(
+        &functions::repository::replace::readRepo_legacy,
+        &functions::repository::replace::readRepo
+    );
     const char* xml =
         R"(<?xml version="1.0" encoding="UTF-8"?>
            <Functions>
@@ -78,7 +88,7 @@ TEST_CASE("FUSReplaceReader parses replace doc", "[repository][replace]") {
 
     TY_Blob blob(xml, std::strlen(xml));
 
-    auto functions = rpl::readRepo(blob, "test-simple-doc");
+    auto functions = reader(blob, "test-simple-doc");
 
     REQUIRE(functions.size() == 1);
 
@@ -90,6 +100,10 @@ TEST_CASE("FUSReplaceReader parses replace doc", "[repository][replace]") {
 TEST_CASE("FUSReplaceReader rejects duplicated function IDs", "[repository][replace]") {
     ensure_xerces();
 
+    auto reader = GENERATE(
+        &functions::repository::replace::readRepo_legacy,
+        &functions::repository::replace::readRepo
+    );
     const char* xml =
         R"(<?xml version="1.0" encoding="UTF-8"?>
            <Functions>
@@ -100,7 +114,7 @@ TEST_CASE("FUSReplaceReader rejects duplicated function IDs", "[repository][repl
     TY_Blob blob(xml, std::strlen(xml));
 
     try {
-        (void)rpl::readRepo(blob, "dup-test");
+        (void)reader(blob, "dup-test");
         FAIL("Expected M_SystemMessage to be thrown");
     } catch (const SystemMessageError& error) {
         const auto& msg = error.message();
@@ -110,7 +124,11 @@ TEST_CASE("FUSReplaceReader rejects duplicated function IDs", "[repository][repl
 
 TEST_CASE("FUSReplaceReader rejects unknown elements", "[repository][replace]") {
     ensure_xerces();
-
+    
+    auto reader = GENERATE(
+            &functions::repository::replace::readRepo_legacy,
+            &functions::repository::replace::readRepo
+        );
     const char* xml =
         R"(<?xml version="1.0" encoding="UTF-8"?>
            <Functions>
@@ -121,7 +139,7 @@ TEST_CASE("FUSReplaceReader rejects unknown elements", "[repository][replace]") 
     TY_Blob blob(xml, std::strlen(xml));
 
     try {
-        (void)rpl::readRepo(blob, "unknown-elem-test");
+        (void)reader(blob, "unknown-elem-test");
         FAIL("Expected M_SystemMessage to be thrown");
     } catch (const SystemMessageError& error) {
         const auto& msg = error.message();
@@ -132,7 +150,11 @@ TEST_CASE("FUSReplaceReader rejects unknown elements", "[repository][replace]") 
 
 TEST_CASE("FUSReplaceReader rejects unexpected element while expecting Functions", "[repository][replace]") {
     ensure_xerces();
-
+    
+    auto reader = GENERATE(
+            &functions::repository::replace::readRepo_legacy,
+            &functions::repository::replace::readRepo
+        );
     const char* xml =
         R"(<?xml version="1.0" encoding="UTF-8"?>
            <Function>
@@ -143,7 +165,7 @@ TEST_CASE("FUSReplaceReader rejects unexpected element while expecting Functions
     TY_Blob blob(xml, std::strlen(xml));
 
     try {
-        (void)rpl::readRepo(blob, "unexpected-elem-test");
+        (void)reader(blob, "unexpected-elem-test");
         FAIL("Expected M_SystemMessage to be thrown");
     } catch (const SystemMessageError& error) {
         const auto& msg = error.message();
@@ -154,7 +176,11 @@ TEST_CASE("FUSReplaceReader rejects unexpected element while expecting Functions
 
 TEST_CASE("FUSReplaceReader rejects unexpected elements while expecting Function", "[repository][replace]") {
     ensure_xerces();
-
+    
+    auto reader = GENERATE(
+            &functions::repository::replace::readRepo_legacy,
+            &functions::repository::replace::readRepo
+        );
     const char* xml =
         R"(<?xml version="1.0" encoding="UTF-8"?>
            <Functions>
@@ -165,7 +191,7 @@ TEST_CASE("FUSReplaceReader rejects unexpected elements while expecting Function
     TY_Blob blob(xml, std::strlen(xml));
 
     try {
-        (void)rpl::readRepo(blob, "unexpected-elem-test");
+        (void)reader(blob, "unexpected-elem-test");
         FAIL("Expected M_SystemMessage to be thrown");
     } catch (const SystemMessageError& error) {
         const auto& msg = error.message();
@@ -177,7 +203,12 @@ TEST_CASE("FUSReplaceReader rejects unexpected elements while expecting Function
 
 TEST_CASE("FUSReplaceReader rejects unexpected child of ID/Source", "[repository][replace]") {
     ensure_xerces();
-
+    
+    auto reader = GENERATE(
+            &functions::repository::replace::readRepo_legacy,
+            &functions::repository::replace::readRepo
+        );
+    
     const char* xml =
         R"(<?xml version="1.0" encoding="UTF-8"?>
            <Functions>
@@ -190,7 +221,7 @@ TEST_CASE("FUSReplaceReader rejects unexpected child of ID/Source", "[repository
     TY_Blob blob(xml, std::strlen(xml));
 
     try {
-        (void)rpl::readRepo(blob, "unexpected-child-test");
+        (void)reader(blob, "unexpected-child-test");
         FAIL("Expected M_SystemMessage to be thrown");
     } catch (const SystemMessageError& error) {
         const auto& msg = error.message();
@@ -203,6 +234,11 @@ TEST_CASE("FUSReplaceReader rejects unexpected child of ID/Source", "[repository
 TEST_CASE("FUSReplaceReader rejects unexpected elements while expecting a child of function", "[repository][replace]") {
     ensure_xerces();
 
+    auto reader = GENERATE(
+        &functions::repository::replace::readRepo_legacy,
+        &functions::repository::replace::readRepo
+    );
+    
     const char* xml =
         R"(<?xml version="1.0" encoding="UTF-8"?>
            <Functions>
@@ -215,7 +251,7 @@ TEST_CASE("FUSReplaceReader rejects unexpected elements while expecting a child 
     TY_Blob blob(xml, std::strlen(xml));
 
     try {
-        (void)rpl::readRepo(blob, "unexpected-elem-test");
+        (void)reader(blob, "unexpected-elem-test");
         FAIL("Expected M_SystemMessage to be thrown");
     } catch (const SystemMessageError& error) {
         const auto& msg = error.message();
@@ -228,6 +264,11 @@ TEST_CASE("FUSReplaceReader rejects unexpected elements while expecting a child 
 TEST_CASE("FUSReplaceReader: <Pattern> before <ID>", "[repository][replace]") {
     ensure_xerces();
 
+    auto reader = GENERATE(
+        &functions::repository::replace::readRepo_legacy,
+        &functions::repository::replace::readRepo
+    );
+    
     const char* xml =
         R"(<?xml version="1.0" encoding="UTF-8"?>
            <Functions>
@@ -240,7 +281,7 @@ TEST_CASE("FUSReplaceReader: <Pattern> before <ID>", "[repository][replace]") {
     TY_Blob blob(xml, std::strlen(xml));
 
     try {
-        (void)rpl::readRepo(blob, "pattern-before-id-test");
+        (void)reader(blob, "pattern-before-id-test");
         FAIL("Expected M_SystemMessage to be thrown");
     } catch (const SystemMessageError& error) {
         const auto& msg = error.message();
@@ -252,6 +293,11 @@ TEST_CASE("FUSReplaceReader: <Pattern> before <ID>", "[repository][replace]") {
 TEST_CASE("FUSReplaceReader parses doc with only ID as child of functions", "[repository][replace]") {
     ensure_xerces();
 
+    auto reader = GENERATE(
+        &functions::repository::replace::readRepo_legacy,
+        &functions::repository::replace::readRepo
+    );
+    
     const char* xml =
         R"(<?xml version="1.0" encoding="UTF-8"?>
            <Functions>
@@ -268,7 +314,7 @@ TEST_CASE("FUSReplaceReader parses doc with only ID as child of functions", "[re
 
     TY_Blob blob(xml, std::strlen(xml));
 
-    auto functions = rpl::readRepo(blob, "test-simple-doc-no-source");
+    auto functions = reader(blob, "test-simple-doc-no-source");
 
     REQUIRE(functions.size() == 3);
 
@@ -280,6 +326,11 @@ TEST_CASE("FUSReplaceReader parses doc with only ID as child of functions", "[re
 TEST_CASE("FUSReplaceReader parses multiple IDs inside a Function", "[repository][replace]") {
     ensure_xerces();
 
+    auto reader = GENERATE(
+        &functions::repository::replace::readRepo_legacy,
+        &functions::repository::replace::readRepo
+    );
+    
     const char* xml =
         R"(<?xml version="1.0" encoding="UTF-8"?>
            <Functions>
@@ -294,7 +345,7 @@ TEST_CASE("FUSReplaceReader parses multiple IDs inside a Function", "[repository
 
     TY_Blob blob(xml, std::strlen(xml));
 
-    auto functions = rpl::readRepo(blob, "test-simple-doc-no-source");
+    auto functions = reader(blob, "test-simple-doc-no-source");
 
     // this parser creates a Function object after an ID is detected, it doesn't validate against a schema.
     REQUIRE(functions.size() == 3);
@@ -307,6 +358,11 @@ TEST_CASE("FUSReplaceReader parses multiple IDs inside a Function", "[repository
 TEST_CASE("FUSReplaceReader parses simple doc without function child", "[repository][replace]") {
     ensure_xerces();
 
+    auto reader = GENERATE(
+        &functions::repository::replace::readRepo_legacy,
+        &functions::repository::replace::readRepo
+    );
+    
     const char* xml =
         R"(<?xml version="1.0" encoding="UTF-8"?>
            <Functions>
@@ -316,7 +372,7 @@ TEST_CASE("FUSReplaceReader parses simple doc without function child", "[reposit
 
     TY_Blob blob(xml, std::strlen(xml));
 
-    auto functions = rpl::readRepo(blob, "test-no-function-child");
+    auto functions = reader(blob, "test-no-function-child");
 
     REQUIRE(functions.empty());
 }

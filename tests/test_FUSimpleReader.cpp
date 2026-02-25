@@ -13,8 +13,9 @@
 #include <string>
 #include <vector>
 
+#include "catch2/generators/catch_generators.hpp"
+
 namespace fs = std::filesystem;
-namespace spl = functions::repository::simple;
 
 // Initialize Xerces
 struct XercesGuard {
@@ -47,6 +48,11 @@ static std::string slurp(const fs::path& p) {
 TEST_CASE("FUSimpleReader parses tabfiles/simple.tab", "[repository][simple]") {
     ensure_xerces();
 
+    auto reader = GENERATE(
+        &functions::repository::simple::readRepo_legacy,
+        &functions::repository::simple::readRepo
+    );
+
     const fs::path simple_path = fs::path(PROJECT_SOURCE_DIR) / "tabfiles" / "simple.tab";
     // parse the XML to string.
     const std::string xml = slurp(simple_path);
@@ -54,7 +60,7 @@ TEST_CASE("FUSimpleReader parses tabfiles/simple.tab", "[repository][simple]") {
     // TY_Blob stores pointer+size (it copies here)
     TY_Blob blob(xml.data(), xml.size());
 
-    auto functions = spl::readRepo(blob, "simple.tab");
+    auto functions = reader(blob, "simple.tab");
 
     REQUIRE(functions.size() == 4);
 
@@ -74,6 +80,11 @@ TEST_CASE("FUSimpleReader parses tabfiles/simple.tab", "[repository][simple]") {
 TEST_CASE("FUSimpleReader parses simple doc", "[repository][simple]") {
     ensure_xerces();
 
+    auto reader = GENERATE(
+        &functions::repository::simple::readRepo_legacy,
+        &functions::repository::simple::readRepo
+    );
+    
     const char* xml =
         R"(<?xml version="1.0" encoding="UTF-8"?>
            <Functions>
@@ -85,7 +96,7 @@ TEST_CASE("FUSimpleReader parses simple doc", "[repository][simple]") {
 
     TY_Blob blob(xml, std::strlen(xml));
 
-    auto functions = spl::readRepo(blob, "test-simple-doc");
+    auto functions = reader(blob, "test-simple-doc");
 
     REQUIRE(functions.size() == 1);
 
@@ -97,6 +108,11 @@ TEST_CASE("FUSimpleReader parses simple doc", "[repository][simple]") {
 TEST_CASE("FUSimpleReader rejects duplicated function IDs", "[repository][simple]") {
     ensure_xerces();
 
+    auto reader = GENERATE(
+        &functions::repository::simple::readRepo_legacy,
+        &functions::repository::simple::readRepo
+    );
+    
     const char* xml =
         R"(<?xml version="1.0" encoding="UTF-8"?>
            <Functions>
@@ -107,7 +123,7 @@ TEST_CASE("FUSimpleReader rejects duplicated function IDs", "[repository][simple
     TY_Blob blob(xml, std::strlen(xml));
 
     try {
-        (void)spl::readRepo(blob, "dup-test");
+        (void)reader(blob, "dup-test");
         FAIL("Expected M_SystemMessage to be thrown");
     } catch (const SystemMessageError& error) {
         const auto& msg = error.message();
@@ -118,6 +134,11 @@ TEST_CASE("FUSimpleReader rejects duplicated function IDs", "[repository][simple
 TEST_CASE("FUSimpleReader rejects unknown elements", "[repository][simple]") {
     ensure_xerces();
 
+    auto reader = GENERATE(
+        &functions::repository::simple::readRepo_legacy,
+        &functions::repository::simple::readRepo
+    );
+    
     const char* xml =
         R"(<?xml version="1.0" encoding="UTF-8"?>
            <Functions>
@@ -128,7 +149,7 @@ TEST_CASE("FUSimpleReader rejects unknown elements", "[repository][simple]") {
     TY_Blob blob(xml, std::strlen(xml));
 
     try {
-        (void)spl::readRepo(blob, "unknown-elem-test");
+        (void)reader(blob, "unknown-elem-test");
         FAIL("Expected M_SystemMessage to be thrown");
     } catch (const SystemMessageError& error) {
         const auto& msg = error.message();
@@ -140,6 +161,11 @@ TEST_CASE("FUSimpleReader rejects unknown elements", "[repository][simple]") {
 TEST_CASE("FUSimpleReader rejects unexpected element while expecting Functions", "[repository][simple]") {
     ensure_xerces();
 
+    auto reader = GENERATE(
+        &functions::repository::simple::readRepo_legacy,
+        &functions::repository::simple::readRepo
+    );
+    
     const char* xml =
         R"(<?xml version="1.0" encoding="UTF-8"?>
            <Function>
@@ -150,7 +176,7 @@ TEST_CASE("FUSimpleReader rejects unexpected element while expecting Functions",
     TY_Blob blob(xml, std::strlen(xml));
 
     try {
-        (void)spl::readRepo(blob, "unexpected-elem-test");
+        (void)reader(blob, "unexpected-elem-test");
         FAIL("Expected M_SystemMessage to be thrown");
     } catch (const SystemMessageError& error) {
         const auto& msg = error.message();
@@ -162,6 +188,10 @@ TEST_CASE("FUSimpleReader rejects unexpected element while expecting Functions",
 TEST_CASE("FUSimpleReader rejects unexpected elements while expecting Function", "[repository][simple]") {
     ensure_xerces();
 
+    auto reader = GENERATE(
+        &functions::repository::simple::readRepo_legacy,
+        &functions::repository::simple::readRepo
+    );
     const char* xml =
         R"(<?xml version="1.0" encoding="UTF-8"?>
            <Functions>
@@ -172,7 +202,7 @@ TEST_CASE("FUSimpleReader rejects unexpected elements while expecting Function",
     TY_Blob blob(xml, std::strlen(xml));
 
     try {
-        (void)spl::readRepo(blob, "unexpected-elem-test");
+        (void)reader(blob, "unexpected-elem-test");
         FAIL("Expected M_SystemMessage to be thrown");
     } catch (const SystemMessageError& error) {
         const auto& msg = error.message();
@@ -184,6 +214,10 @@ TEST_CASE("FUSimpleReader rejects unexpected elements while expecting Function",
 TEST_CASE("FUSimpleReader rejects unexpected elements while expecting ID/Source", "[repository][simple]") {
     ensure_xerces();
 
+    auto reader = GENERATE(
+        &functions::repository::simple::readRepo_legacy,
+        &functions::repository::simple::readRepo
+    );
     const char* xml =
         R"(<?xml version="1.0" encoding="UTF-8"?>
            <Functions>
@@ -196,7 +230,7 @@ TEST_CASE("FUSimpleReader rejects unexpected elements while expecting ID/Source"
     TY_Blob blob(xml, std::strlen(xml));
 
     try {
-        (void)spl::readRepo(blob, "unexpected-elem-test");
+        (void)reader(blob, "unexpected-elem-test");
         FAIL("Expected M_SystemMessage to be thrown");
     } catch (const SystemMessageError& error) {
         const auto& msg = error.message();
@@ -208,6 +242,10 @@ TEST_CASE("FUSimpleReader rejects unexpected elements while expecting ID/Source"
 TEST_CASE("FUSimpleReader rejects unexpected child of ID/Source", "[repository][simple]") {
     ensure_xerces();
 
+    auto reader = GENERATE(
+        &functions::repository::simple::readRepo_legacy,
+        &functions::repository::simple::readRepo
+    );
     const char* xml =
         R"(<?xml version="1.0" encoding="UTF-8"?>
            <Functions>
@@ -220,7 +258,7 @@ TEST_CASE("FUSimpleReader rejects unexpected child of ID/Source", "[repository][
     TY_Blob blob(xml, std::strlen(xml));
 
     try {
-        (void)spl::readRepo(blob, "unexpected-child-test");
+        (void)reader(blob, "unexpected-child-test");
         FAIL("Expected M_SystemMessage to be thrown");
     } catch (const SystemMessageError& error) {
         const auto& msg = error.message();
@@ -233,6 +271,10 @@ TEST_CASE("FUSimpleReader rejects unexpected child of ID/Source", "[repository][
 TEST_CASE("FUSimpleReader: <Source> before <ID>", "[repository][simple]") {
     ensure_xerces();
 
+    auto reader = GENERATE(
+        &functions::repository::simple::readRepo_legacy,
+        &functions::repository::simple::readRepo
+    );
     const char* xml =
         R"(<?xml version="1.0" encoding="UTF-8"?>
            <Functions>
@@ -245,7 +287,7 @@ TEST_CASE("FUSimpleReader: <Source> before <ID>", "[repository][simple]") {
     TY_Blob blob(xml, std::strlen(xml));
 
     try {
-        (void)spl::readRepo(blob, "source-before-id-test");
+        (void)reader(blob, "source-before-id-test");
         FAIL("Expected M_SystemMessage to be thrown");
     } catch (const SystemMessageError& error) {
         const auto& msg = error.message();
@@ -256,6 +298,10 @@ TEST_CASE("FUSimpleReader: <Source> before <ID>", "[repository][simple]") {
 TEST_CASE("FUSimpleReader parses simple doc without <source>", "[repository][simple]") {
     ensure_xerces();
 
+    auto reader = GENERATE(
+        &functions::repository::simple::readRepo_legacy,
+        &functions::repository::simple::readRepo
+    );
     const char* xml =
         R"(<?xml version="1.0" encoding="UTF-8"?>
            <Functions>
@@ -269,7 +315,7 @@ TEST_CASE("FUSimpleReader parses simple doc without <source>", "[repository][sim
 
     TY_Blob blob(xml, std::strlen(xml));
 
-    auto functions = spl::readRepo(blob, "test-simple-doc-no-source");
+    auto functions = reader(blob, "test-simple-doc-no-source");
 
     REQUIRE(functions.size() == 2);
 
@@ -280,6 +326,10 @@ TEST_CASE("FUSimpleReader parses simple doc without <source>", "[repository][sim
 TEST_CASE("FUSimpleReader parses multiple IDs inside a Function", "[repository][simple]") {
     ensure_xerces();
 
+    auto reader = GENERATE(
+        &functions::repository::simple::readRepo_legacy,
+        &functions::repository::simple::readRepo
+    );
     const char* xml =
         R"(<?xml version="1.0" encoding="UTF-8"?>
            <Functions>
@@ -294,7 +344,7 @@ TEST_CASE("FUSimpleReader parses multiple IDs inside a Function", "[repository][
 
     TY_Blob blob(xml, std::strlen(xml));
 
-    auto functions = spl::readRepo(blob, "test-simple-doc-no-source");
+    auto functions = reader(blob, "test-simple-doc-no-source");
 
     REQUIRE(functions.size() == 3);
 
@@ -306,6 +356,10 @@ TEST_CASE("FUSimpleReader parses multiple IDs inside a Function", "[repository][
 TEST_CASE("FUSimpleReader parses empty IDs", "[repository][simple]") {
     ensure_xerces();
 
+    auto reader = GENERATE(
+        &functions::repository::simple::readRepo_legacy,
+        &functions::repository::simple::readRepo
+    );
     const char* xml =
         R"(<?xml version="1.0" encoding="UTF-8"?>
            <Functions>
@@ -318,7 +372,7 @@ TEST_CASE("FUSimpleReader parses empty IDs", "[repository][simple]") {
            </Functions>)";
 
     TY_Blob blob(xml, std::strlen(xml));
-    auto functions = spl::readRepo(blob, "test-empty-ids");
+    auto functions = reader(blob, "test-empty-ids");
     REQUIRE(functions.size() == 2);
 
     CHECK(std::string(functions[0].id.c_str()).empty());
@@ -328,6 +382,10 @@ TEST_CASE("FUSimpleReader parses empty IDs", "[repository][simple]") {
 TEST_CASE("FUSimpleReader parses simple doc without function child", "[repository][simple]") {
     ensure_xerces();
 
+    auto reader = GENERATE(
+        &functions::repository::simple::readRepo_legacy,
+        &functions::repository::simple::readRepo
+    );
     const char* xml =
         R"(<?xml version="1.0" encoding="UTF-8"?>
            <Functions>
@@ -337,7 +395,7 @@ TEST_CASE("FUSimpleReader parses simple doc without function child", "[repositor
 
     TY_Blob blob(xml, std::strlen(xml));
 
-    auto functions = spl::readRepo(blob, "test-no-function-child");
+    auto functions = reader(blob, "test-no-function-child");
 
     REQUIRE(functions.empty());
 }
@@ -345,6 +403,10 @@ TEST_CASE("FUSimpleReader parses simple doc without function child", "[repositor
 TEST_CASE("FUSimpleReader preserves whitespaces", "[repository][simple]") {
     ensure_xerces();
 
+    auto reader = GENERATE(
+        &functions::repository::simple::readRepo_legacy,
+        &functions::repository::simple::readRepo
+    );
     const char* xml =
         R"(<?xml version="1.0" encoding="UTF-8"?>
            <Functions>
@@ -357,7 +419,7 @@ TEST_CASE("FUSimpleReader preserves whitespaces", "[repository][simple]") {
 
     TY_Blob blob(xml, std::strlen(xml));
 
-    auto functions = spl::readRepo(blob, "test-preserve-whitespaces");
+    auto functions = reader(blob, "test-preserve-whitespaces");
     // The current implementation doesn't trim whitespaces for text content.
     // Most parsers do trim the whitespaces. If this is the intended behavior is unknown.
     REQUIRE(functions.size() == 1);
@@ -367,6 +429,10 @@ TEST_CASE("FUSimpleReader preserves whitespaces", "[repository][simple]") {
 TEST_CASE("FUSimpleReader validates closing tags", "[repository][simple]") {
     ensure_xerces();
 
+    auto reader = GENERATE(
+        &functions::repository::simple::readRepo_legacy,
+        &functions::repository::simple::readRepo
+    );
     const char* xml =
         R"(<?xml version="1.0" encoding="UTF-8"?>
            <Functions>
@@ -377,7 +443,7 @@ TEST_CASE("FUSimpleReader validates closing tags", "[repository][simple]") {
 
     TY_Blob blob(xml, std::strlen(xml));
     try {
-        auto functions = spl::readRepo(blob, "test-validates-closing-tags");
+        auto functions = reader(blob, "test-validates-closing-tags");
         FAIL("Expected M_SystemMessage to be thrown");
     }
     catch (const SystemMessageError& error) {
