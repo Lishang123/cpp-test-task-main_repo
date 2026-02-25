@@ -85,6 +85,16 @@ TEST_CASE("Memory: duplicate(const void*, size_t) performs deep copy", "[Misc][M
     release(dest);
 }
 
+TEST_CASE("Memory: create(length) creates empty C-string", "[Misc][Memory]")
+{
+    char* s = create(10);
+    REQUIRE(s != nullptr);
+    REQUIRE(s[0] == '\0');
+    REQUIRE(std::strlen(s) == 0);
+
+    release(s);
+}
+
 TEST_CASE("Memory: release(nullptr) is safe", "[Misc][Memory]")
 {
     release(nullptr);
