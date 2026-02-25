@@ -59,3 +59,43 @@ TEST_CASE("ST_String: const char* string set", "[String][st_string]") {
     b.set(a);
     CHECK(b.view() == "hello");
 }
+
+TEST_CASE("ST_String: copy constructor does deep copy", "[String][st_string]")
+{
+    ST_String a("abc");
+    ST_String b(a);
+
+    REQUIRE(a.view() == "abc");
+    REQUIRE(b.view() == "abc");
+
+    // deep copy: pointers must differ
+    REQUIRE(a.c_str() != nullptr);
+    REQUIRE(b.c_str() != nullptr);
+    REQUIRE(a.c_str() != b.c_str());
+
+    // modifying a should not affect b
+    a.modifyInPlace([](char* p) {
+        p[2] = 'N';
+        return 0;
+    });
+
+    REQUIRE(a.view() == "abN");
+    REQUIRE(b.view() == "abc");
+}
+
+TEST_CASE("ST_String: move constructor", "[String][st_string]")
+{
+    ST_String src("abc");
+    const char* srcPtr = src.c_str();
+    REQUIRE(srcPtr != nullptr);
+
+    ST_String dest(std::move(src));
+
+    REQUIRE(dest.view() == "abc");
+    REQUIRE(dest.c_str() == srcPtr);
+
+    // source should be empty/null
+    REQUIRE(src.c_str() == nullptr);
+    REQUIRE(src.isEmpty());
+    REQUIRE(src.view().empty());
+}
