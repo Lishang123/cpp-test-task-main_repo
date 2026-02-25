@@ -5,11 +5,6 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address")
-SET(CMAKE_C_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address")
-SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fsanitize=address")
-
-
 set(Sources
         ./XML/XML_Parser.cpp
         ./XML/XML_xerces_String.cpp
@@ -25,6 +20,9 @@ set(Sources
 )
 
 add_library(parser STATIC ${Sources})
+
+target_compile_options(parser PUBLIC -fsanitize=address -fno-omit-frame-pointer)
+target_link_options(parser PUBLIC -fsanitize=address)
 
 include(FetchContent)
 

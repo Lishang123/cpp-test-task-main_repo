@@ -11,6 +11,15 @@ add_executable(unit_tests
         test_XML_Parser.cpp
 )
 
+target_compile_options(unit_tests PRIVATE
+        -fsanitize=address
+        -fno-omit-frame-pointer
+)
+
+target_link_options(unit_tests PRIVATE
+        -fsanitize=address
+)
+
 target_link_libraries(unit_tests PRIVATE
         parser
         Catch2::Catch2WithMain
