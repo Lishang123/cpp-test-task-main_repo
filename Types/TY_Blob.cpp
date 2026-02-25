@@ -6,8 +6,7 @@
 
 #include "../Misc/Memory.hpp"
 
-#include <ctype.h>
-#include <string.h>
+#include <cstring>
 #include <cassert>
 
 using namespace M::Memory;
