@@ -57,8 +57,10 @@ class ST_String
 
 		void reset();
 
+		// using invoke overkill ?
+		// preserve reference and cv qualifiers using decltype
 		template<typename Functor>
-		auto modifyInPlace( Functor&& f ) -> typename std::invoke_result_t<Functor, char*> { return f( m_String ); };
+		decltype(auto) modifyInPlace( Functor&& f ) { return f( m_String ); };
 };
 
 inline bool operator==( const ST_String &lhs, const M::String::StringType auto &rhs ) noexcept
