@@ -141,15 +141,15 @@ void TY_Blob::getContent( const char** content, T_uint64* size) const
 void TY_Blob::detachContent( char** content, T_uint64* size)
 {
 	if( content)
-	{
-		*content = static_cast< char*>( m_content);
-		m_content = nullptr;
-	}
-
+		*content = static_cast<char*>( m_content);
 	if( size)
-	{
 		*size = m_size;
-	}
+
+	m_content = nullptr;
+	m_size = 0;
+	// unnecessary, the pointer is already empty and size is reset
+	// reset();
+}
 
 	reset();
 }
