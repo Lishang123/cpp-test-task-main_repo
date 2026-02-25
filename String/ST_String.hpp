@@ -90,8 +90,7 @@ struct KVPairKeyComparator
 		return x < y.first;
 	}
 
-	bool operator()(const std::pair<ST_String, ST_String>& x, const std::pair<ST_String, ST_String>& y)
-	{
+	bool operator()(const std::pair<ST_String, ST_String>& x, const std::pair<ST_String, ST_String>& y) const {
 		return x.first < y.first;
 	}
 };
