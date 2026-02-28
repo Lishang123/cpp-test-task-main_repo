@@ -171,13 +171,12 @@ bool Reader::startElementChar( const char *, const char *localName, const char *
  */
 bool Reader::charactersChar( const char *, const char *, const char *, const char *text, const unsigned int )
 {
-    auto currentElement = m_elementStack.back();
-    if( currentElement == Element::id )
+    if(const auto currentElement = m_elementStack.back(); currentElement == Element::id )
     {
         // Checks duplicate IDs against all previously read functions.
         // Make 'function' a const reference.
         // chars can never be nullptr, so as function.id.c_str() since it's copied from char*, so this comp is null-safe.
-        if (auto it = std::ranges::find_if(
+        if (const auto it = std::ranges::find_if(
                                             m_functions,
                                            [text](const Function& function) { return !strcmp(text, function.id.c_str()); }
                                            );
