@@ -52,7 +52,7 @@ std::string listToString(const std::vector<std::string_view>& list) {
         res += fmt::format("'{}'", wanted);
         first = false;
     }
-    return res;
+    return res + ']';
 }
 
 void unexpectedElement( std::string_view got, const std::vector<std::string_view>& wanted_list,
@@ -63,7 +63,7 @@ void unexpectedElement( std::string_view got, const std::vector<std::string_view
     if (wanted_list.size() == 1) {
         expected = fmt::format("'{}'", *wanted_list.begin());
     } else {
-        expected = "one of " + listToString( wanted_list ) + "]";
+        expected = "one of " + listToString( wanted_list );
     }
     unexpected( fmt::format( "Expected {} while parsing {}, got '{}'.",
                              expected, repo, got ) ) ;
