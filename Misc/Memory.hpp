@@ -6,7 +6,6 @@
 #define M_MEMORY_HPP
 
 
-#include <stddef.h>
 #include <memory>
 
 namespace M::Memory
