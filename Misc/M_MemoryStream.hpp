@@ -210,7 +210,7 @@ class  M_MemoryStream : public M::IReadStream
 
         T_uint64 getReadPosition() const override;
 
-		bool hasUnflushedContent() { return m_UnflushedContent.size() > 0; }
+		bool hasUnflushedContent() const { return !m_UnflushedContent.empty(); }
 private:
 		typedef std::deque<M_MemoryStreamFragment> Unflusched_t;
 		mutable Unflusched_t m_UnflushedContent;
