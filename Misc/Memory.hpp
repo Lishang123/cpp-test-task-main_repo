@@ -76,10 +76,10 @@ namespace M::Memory
 	using unique_ptr = std::unique_ptr<T, Releaser>;
 
 	template<class T>
-	unique_ptr<T> as_unique_ptr( T* ptr) { return unique_ptr<T>( ptr, Releaser()); }
+	unique_ptr<T> as_unique_ptr( T* ptr) { return unique_ptr<T>{ptr}; }
 
 	template<class T>
-	unique_ptr<T[]> as_unique_array_ptr( T* ptr) { return unique_ptr<T[]>( ptr, Releaser()); }
+	unique_ptr<T[]> as_unique_array_ptr( T* ptr) { return unique_ptr<T[]>{ptr}; }
 
 	/** Copy memory area.
 	  * @param Buffer The buffer to copy.
