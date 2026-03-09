@@ -101,14 +101,14 @@ class  TY_Blob final : public TY_Base
 		void setContent( void* content, T_uint64 size, bool consume);
 
 		/** Get pointer to content, be aware that this buffer may not be 0-terminated! */
-		const char* getContent() const;
+		[[nodiscard]] const char* getContent() const;
 		/** Set content size.
 		  * @param size New content size.
 		  */
 		void setSize( T_uint64 size, char padding = ' ');
 		/** Get content size. */
-		T_uint64 getSize() const;
-		bool isEmpty() const { return getSize() == 0; }
+		[[nodiscard]] T_uint64 getSize() const;
+		[[nodiscard]] bool isEmpty() const { return getSize() == 0; }
 
 		/** Reset content. */
 		void reset();
