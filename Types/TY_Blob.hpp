@@ -33,7 +33,9 @@ class  TY_Blob final : public TY_Base
 		void* m_content;
 
 	public:
-		using ptr = std::unique_ptr<TY_Blob, ptr::release_deleter<TY_Blob>>;
+		// usage: TY_Blob::ptr b{ TY_Blob::create(...) };
+		// because of the deleter, never use this pointer with TY_Blob created on the stack!!
+		using Ptr = std::unique_ptr<TY_Blob, ptr::release_deleter<TY_Blob>>;
 
 		TY_Blob();
 		TY_Blob( const TY_Blob& content);
