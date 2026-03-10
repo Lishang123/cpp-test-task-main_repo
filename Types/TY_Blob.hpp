@@ -15,7 +15,10 @@ namespace ptr
     template<class C>
     struct release_deleter
     {
-        void operator()( C *cpx ) { cpx->release(); };
+        void operator()( C *cpx ) const noexcept {
+	        if (cpx)
+        		cpx->release();
+        };
     };
 
 } // namespace ptr
