@@ -70,7 +70,7 @@ class  TY_Blob final : public TY_Base
 		  */
 		void getContent( const char** content, T_uint64* size) const;
 		/** Get ownership of internal buffer. The blob will be empty but still usable afterwards.
-		  * Make sure to remove the buffer with M_Memory::release().
+		  * Make sure to remove the buffer with M::Memory::release().
 		  * @param content Store pointer to content here. May be NULL.
 		  * @param size Store pointer to size of content here. May be NULL.
 		  */
