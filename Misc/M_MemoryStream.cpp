@@ -219,10 +219,10 @@ void M_MemoryStream::flush() const
 		return;
 	}
 
-	auto size = std::accumulate( m_UnflushedContent.begin(), m_UnflushedContent.end(), m_Content.getSize(),
-	                             []( T_uint64 sum, const M_MemoryStreamFragment& f) { return sum + f.getSize(); });
+	const auto size = std::accumulate( m_UnflushedContent.begin(), m_UnflushedContent.end(), m_Content.getSize(),
+	                             [](const T_uint64 sum, const M_MemoryStreamFragment& f) { return sum + f.getSize(); });
 
-	auto newContent = M::Memory::allocate<char>( size);
+	const auto newContent = M::Memory::allocate<char>( size);
 
 	const char* startContent;
 	T_uint64 startSize;
