@@ -12,7 +12,6 @@
 #include <variant>
 
 
-class ST_String;
 
 class M_MemoryStreamFragment
 {
