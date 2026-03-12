@@ -384,8 +384,8 @@ void M_MemoryStream::writeConsume( char* Content, T_uint64 Size)
 
 void M_MemoryStream::terminate()
 {
-	const char Termite[] = "";
-	write( Termite, 1L);
+	constexpr char Terminator[] = "";
+	write( Terminator, 1L);
 }
 
 void M_MemoryStream::getContent( const char** Content, T_uint64* Size) const
