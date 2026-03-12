@@ -214,7 +214,7 @@ private:
 		mutable T_uint64 m_ReadPosition;
 		mutable T_uint64 m_Size;
 
-		M_MemoryStreamFragment& m_lastUnflushed() { return m_UnflushedContent.back(); }
+		M_MemoryStreamFragment& m_lastUnflushed() const { return m_UnflushedContent.back(); }
 		void m_setReadPosition( T_uint64 newPos ) override;
 };
 
