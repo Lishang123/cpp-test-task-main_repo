@@ -177,6 +177,8 @@ M_MemoryStream::M_MemoryStream( M_MemoryStream&& src) noexcept
 	  , m_ReadPosition( src.m_ReadPosition)
 	  , m_Size( src.m_Size)
 {
+	src.m_ReadPosition = 0;
+	src.m_Size = 0;
 }
 
 M_MemoryStream::M_MemoryStream( const char* String)
