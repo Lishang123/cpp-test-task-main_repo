@@ -93,6 +93,11 @@ public:
 
     XML_Parser(bool UseValidation = false, bool UseNamespaces = false, bool IgnoreXMLDeclaration = false);
 
+    XML_Parser(const XML_Parser &) = delete;
+    XML_Parser& operator=(const XML_Parser &) = delete;
+    XML_Parser(XML_Parser &&) = delete;
+    XML_Parser& operator=(XML_Parser &&) = delete;
+
     ~XML_Parser() override;
 
     /** Start of a new element. */
