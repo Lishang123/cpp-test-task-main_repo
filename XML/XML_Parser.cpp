@@ -234,6 +234,7 @@ const char* XML_Parser::m_RemoveXMLDeclaration( const char *Buffer, size_t Buffe
         {
             NoWhitespaceBuffer += 5;
             // scan until "?>" is found
+            // legacy code: while( BufferSize >= 2 && NoWhitespaceBuffer[0] != '?' && NoWhitespaceBuffer[1] != '>')
             while(BufferSize >= 2 && !(NoWhitespaceBuffer[0] == '?' && NoWhitespaceBuffer[1] == '>'))
             {
                 ++NoWhitespaceBuffer;
