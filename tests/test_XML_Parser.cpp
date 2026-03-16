@@ -31,6 +31,12 @@ static void ensure_xerces() {
 TEST_CASE("XML_Parser ignores (wrong) XML declaration", "[xml][parser]") {
     ensure_xerces();
 
+    /*
+     * in this test, encoding="UTF-8?" is wrong because of the extra '?'.
+     * Since the old condition in 'm_RemoveXMLDeclaration' for advancing the buffer is wrong,
+     * this header cannot be removed completely and will lead to error.
+     * After fixing the problem, this header can be successfully ignored.
+     */
     const char* xml =
         R"(<?xml version="1.0" encoding="UTF-8?"?>
            <Functions>
@@ -42,7 +48,9 @@ TEST_CASE("XML_Parser ignores (wrong) XML declaration", "[xml][parser]") {
 
     TY_Blob blob(xml, std::strlen(xml));
     XML_Parser parser_ignore_header(false, false, true);
+    // No error after ignoring the wrong header
     REQUIRE(parser_ignore_header.parseBlob(&blob));
+    // Throw when not ignoring the wrong header
     try {
         XML_Parser parser_default;
         parser_default.parseBlob(&blob);
