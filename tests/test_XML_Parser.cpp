@@ -3,8 +3,7 @@
 #include "../XML/XML_Parser.hpp"
 #include "../Types/TY_Blob.hpp"
 #include "../Misc/SystemMessageError.hpp"
-
-#include <xercesc/util/PlatformUtils.hpp>
+#include "./XercesGuard.hpp"
 
 #include <filesystem>
 #include <fstream>
@@ -15,18 +14,7 @@
 
 namespace fs = std::filesystem;
 
-// Initialize Xerces
-struct XercesGuard {
-    XercesGuard() { xercesc::XMLPlatformUtils::Initialize(); }
-    ~XercesGuard() { xercesc::XMLPlatformUtils::Terminate(); }
-};
 
-/**
- * Ensure xerces is initialized for the tests.
- */
-static void ensure_xerces() {
-    static XercesGuard guard{};
-}
 
 TEST_CASE("XML_Parser ignores (wrong) XML declaration", "[xml][parser]") {
     ensure_xerces();

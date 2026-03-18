@@ -3,8 +3,8 @@
 #include "../repository/FUSReplaceReader.hpp"
 #include "../Types/TY_Blob.hpp"
 #include "../Misc/SystemMessageError.hpp"
+#include "./XercesGuard.hpp"
 
-#include <xercesc/util/PlatformUtils.hpp>
 
 #include <filesystem>
 #include <fstream>
@@ -15,19 +15,6 @@
 #include "catch2/generators/catch_generators.hpp"
 
 namespace fs = std::filesystem;
-
-// Initialize Xerces
-struct XercesGuard {
-    XercesGuard() { xercesc::XMLPlatformUtils::Initialize(); }
-    ~XercesGuard() { xercesc::XMLPlatformUtils::Terminate(); }
-};
-
-/**
- * Ensure xerces is initialized for the tests.
- */
-static void ensure_xerces() {
-    static XercesGuard guard{};
-}
 
 /**
  * Read the file into a string (for TY_Blob).

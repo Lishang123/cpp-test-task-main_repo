@@ -17,6 +17,7 @@ set(Sources
         ./repository/utils.cpp
         ./repository/FUSimpleReader.cpp
         ./repository/FUSReplaceReader.cpp
+        ./tests/XercesGuard.cpp
 )
 
 add_library(parser STATIC ${Sources})
