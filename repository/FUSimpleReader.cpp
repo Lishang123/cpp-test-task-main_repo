@@ -164,14 +164,14 @@ bool Reader::startElementChar( const char *, const char *localName, const char *
 }
 
 /**
- * Handle character data inside <ID> and <Source> elements.
- * When parsing <ID>, a new Function object is created and its ID is set.
- * When parsing <Source>, the source text is assigned to the current Function.
- * @param text the text content. An empty string will be given if the content is empty.
- * @return true if build succeeds. <br>
- * Throws lm::duplicated_function_id for duplicate function ids. <br>
- * Throws lm::source_before_id if ID is not the first child element.
- */
+    * Handle character data inside <ID> and <Source> elements. <br>
+    * When parsing <ID>, a new Function object is created and its ID is set. <br>
+    * When parsing <Source>, the source text is assigned to the current Function. <br>
+    * @param text the text content. An empty string will be given if the content is empty.
+    * @return true if build succeeds.
+    * Throws lm::duplicated_function_id for duplicate function ids.
+    * Throws lm::source_before_id if ID is not the first child element.
+*/
 bool Reader::charactersChar( const char *, const char *, const char *, const char *text, const unsigned int )
 {
     if(const auto currentElement = m_elementStack.back(); currentElement == Element::id )
