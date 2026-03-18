@@ -90,6 +90,10 @@ Functions Reader::read( const TY_Blob &data, std::string_view repo ) &&
 {
     // stores repo label for diagnostics
     m_repository.set( repo );
+    // add these lines to prevent deliberate reuse of this function like: std::move(reader).read()
+    // m_functions.clear();
+    // m_elementStack.clear();
+    // m_currentFuncIndex = std::nullopt;
     // seeds the stack with document
     m_elementStack.push_back( Element::document );
 
