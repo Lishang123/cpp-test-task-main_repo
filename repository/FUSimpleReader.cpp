@@ -177,8 +177,8 @@ bool Reader::charactersChar( const char *, const char *, const char *, const cha
     if(const auto currentElement = m_elementStack.back(); currentElement == Element::id )
     {
         // Checks duplicate IDs against all previously read functions.
-        // Make 'function' a const reference.
-        // chars can never be nullptr, so as function.id.c_str() since it's copied from char*, so this comp is null-safe.
+        // Made 'function' a const reference.
+        // text can never be nullptr, same as function.id.c_str() since it's copied from char*, so this comp is null-safe.
         if (const auto it = std::ranges::find_if(
                                             m_functions,
                                            [text](const Function& function) { return !strcmp(text, function.id.c_str()); }
