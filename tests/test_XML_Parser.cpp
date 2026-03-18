@@ -135,7 +135,7 @@ TEMPLATE_TEST_CASE("XML_Parser ignores no attribute", "[xml][parser][attr][long]
 
     TY_Blob blob(xml, std::strlen(xml));
 
-    AttrTestParserLegacy parser;
+    auto parser = makeParser<TestType>();
     REQUIRE(parser.parseBlob(&blob));
     REQUIRE_FALSE(parser.attrLongExists);
     REQUIRE_FALSE(parser.attrValueLong);
