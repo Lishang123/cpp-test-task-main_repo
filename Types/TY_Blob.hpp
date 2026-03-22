@@ -101,9 +101,9 @@ class  TY_Blob final : public TY_Base
 		  * allocated via M::Memory.
 		  * @param content New content.
 		  * @param size Size of new content.
-		  * @param consume Signals whether a copy should be made.
+		  * @param adopt Signals whether a copy should be made.
 		  */
-		void setContent( void* content, T_uint64 size, bool consume);
+		void setContent( void* content, T_uint64 size, bool adopt);
 
 		/** Get pointer to content, be aware that this buffer may not be 0-terminated! */
 		[[nodiscard]] const char* getContent() const;
