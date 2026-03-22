@@ -160,7 +160,7 @@ T_uint64 TY_Blob::copyContent( char* buffer, T_uint64 offset, T_uint64 size) con
 	if (offset >= m_size)
 		return 0;
 
-	T_uint64 sizeLeft = m_size - offset;
+	T_uint64 sizeLeft = m_size - offset; // can never be negative!!
 
 	if( sizeLeft < size)
 		size = sizeLeft;
@@ -217,13 +217,13 @@ void TY_Blob::setContent( const void* content, T_uint64 size)
 	}
 }
 
-void TY_Blob::setContent( void* content, T_uint64 size, bool consume)
+void TY_Blob::setContent( void* content, T_uint64 size, bool adopt)
 {
 	reset();
 
 	m_size = size;
 
-	if( consume)
+	if( adopt)
 	{
 		m_content = content;
 		assert( (m_content || m_size == 0) && "Content is null but size > 0");
@@ -248,7 +248,7 @@ void TY_Blob::setSize( T_uint64 size, char padding)
 {
 	if( size > m_size)
 	{
-		// Resize first in local var to prevent the original being set to null.
+		// Resize first in local var to prevent the original being set to null (which should be impossible in this case).
 		void* new_content = reAllocate( m_content, size);
 		if( !new_content)
 			return;
