@@ -93,7 +93,7 @@ namespace M::Memory
 	 char* duplicate( const char* Buffer, size_t Size);
 
 	 /**
-	  * create an empty C-string with size length
+	  * create an empty C-string with size length, allocating (length + 1) byte.
 	  * @param length
 	  * @return a pointer to the C-string
 	  */
