@@ -60,7 +60,9 @@ class ST_String
 		// using invoke overkill ?
 		// preserve reference and cv qualifiers using decltype
 		template<typename Functor>
-		decltype(auto) modifyInPlace( Functor&& f ) { return f( m_String ); };
+		decltype(auto) modifyInPlace( Functor&& f ) {
+			return std::invoke(std::forward<Functor>(f), m_String);
+		};
 };
 
 inline bool operator==( const ST_String &lhs, const M::String::StringType auto &rhs ) noexcept
