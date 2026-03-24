@@ -113,7 +113,7 @@ inline constexpr bool equal( const StringType auto& lhs, const StringType auto& 
     const bool lnull = (lsv.data() == nullptr);
     const bool rnull = (rsv.data() == nullptr);
     return (lnull == rnull) && (compare(lsv, rsv, length ) == 0);
-    return ( !lsv.data() == !rsv.data() ) && ( compare( lsv, rsv, length ) == 0 );
+    // return ( !lsv.data() == !rsv.data() ) && ( compare( lsv, rsv, length ) == 0 );
 }
 
 /**
