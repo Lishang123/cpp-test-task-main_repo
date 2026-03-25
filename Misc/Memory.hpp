@@ -80,11 +80,11 @@ namespace M::Memory
 	template<class T>
 	unique_ptr<T[]> as_unique_array_ptr( T* ptr) { return unique_ptr<T[]>{ptr}; }
 
-	/** Copy memory area.
-	  * @param Buffer The buffer to copy.
-	  * @param Size The size of the buffer.
-	  */
-	 void* duplicate( void* Buffer, size_t Size);
+	// /** Copy memory area.
+	//   * @param Buffer The buffer to copy.
+	//   * @param Size The size of the buffer.
+	//   */
+	//  void* duplicate( void* Buffer, size_t Size);
 
 	/** Copy memory area.
 	  * @param Buffer The buffer to copy. Can have zero bytes which will all be copied up to the Size.
