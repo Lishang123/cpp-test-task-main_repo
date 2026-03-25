@@ -33,7 +33,7 @@ XML_xerces_String::XML_xerces_String( std::string_view localForm )
 		xercesc::XMLPlatformUtils::fgTransService->makeNewTranscoderFor( "utf-8", result, 64 * 1024,
 		                                                                 xercesc::XMLPlatformUtils::fgMemoryManager);
 
-	m_LocalForm = M::Memory::duplicate( localForm.data(), localForm.size());
+	m_LocalForm = M::Memory::duplicateUniqueArray( localForm.data(), localForm.size());
 }
 
 XML_xerces_String::XML_xerces_String( const XMLCh* String)
@@ -50,10 +50,9 @@ XML_xerces_String::XML_xerces_String( const XMLCh* String)
 }
 
 XML_xerces_String::XML_xerces_String(XML_xerces_String &&other) noexcept
-: m_Transcoder( other.m_Transcoder), m_XMLForm( other.m_XMLForm), m_LocalForm( other.m_LocalForm)
+: m_Transcoder( other.m_Transcoder), m_XMLForm( other.m_XMLForm), m_LocalForm( std::move(other.m_LocalForm))
 {
 	other.m_XMLForm = nullptr;
-	other.m_LocalForm = nullptr;
 	other.m_Transcoder = nullptr;
 }
 
@@ -62,25 +61,22 @@ XML_xerces_String & XML_xerces_String::operator=(XML_xerces_String &&other) noex
 		return(*this);
 	}
 	// release old memory
-	M::Memory::release( m_LocalForm );
 	xercesc::XMLString::release( &m_XMLForm);
 	delete m_Transcoder;
 
 	// steal other's resources
 	m_XMLForm = other.m_XMLForm;
-	m_LocalForm = other.m_LocalForm;
+	m_LocalForm = std::move(other.m_LocalForm);
 	m_Transcoder = other.m_Transcoder;
 
 	// remove other's pointers
 	other.m_XMLForm = nullptr;
-	other.m_LocalForm = nullptr;
 	other.m_Transcoder = nullptr;
 	return(*this);
 }
 
 XML_xerces_String::~XML_xerces_String()
 {
-	M::Memory::release( m_LocalForm );
 	xercesc::XMLString::release( &m_XMLForm);
 
 	delete m_Transcoder;
@@ -88,16 +84,16 @@ XML_xerces_String::~XML_xerces_String()
 
 void XML_xerces_String::setLocalForm( std::string_view localForm)
 {
-    M::Memory::release( m_LocalForm );
+    m_LocalForm.reset();
     xercesc::XMLString::release( &m_XMLForm);
 
 	m_XMLForm = nullptr;
-	m_LocalForm = M::Memory::duplicate( localForm.data(), localForm.length() );
+	m_LocalForm = M::Memory::duplicateUniqueArray( localForm.data(), localForm.length() );
 }
 
 void XML_xerces_String::setXMLForm( const XMLCh* XMLForm)
 {
-    M::Memory::release( m_LocalForm );
+    m_LocalForm.reset();
 	xercesc::XMLString::release( &m_XMLForm);
 
 	m_XMLForm = xercesc::XMLString::replicate( XMLForm);
@@ -140,10 +136,10 @@ std::string_view XML_xerces_String::getLocalForm()
 {
 	if( !m_LocalForm && m_XMLForm )
 	{
-		m_LocalForm = convertToLocalForm( m_XMLForm);
+		m_LocalForm = M::Memory::as_unique_array_ptr(convertToLocalForm( m_XMLForm));
 	}
 
-	return m_LocalForm ? std::string_view { m_LocalForm } : std::string_view{};
+	return m_LocalForm ? std::string_view { m_LocalForm.get() } : std::string_view{};
 }
 
 const XMLCh* XML_xerces_String::getXMLForm()
@@ -155,7 +151,7 @@ const XMLCh* XML_xerces_String::getXMLForm()
 			return( nullptr );
 		}
 
-		m_XMLForm =	convertToXMLForm( m_LocalForm);
+		m_XMLForm =	convertToXMLForm( m_LocalForm.get());
 	}
 
 	return( m_XMLForm);
@@ -172,7 +168,7 @@ int XML_xerces_String::compareNoCase( const char* LocalForm)
 	if (!LocalForm) // non-null self vs null input
 		return 1;
 
-	return( strcasecmp( m_LocalForm, LocalForm));
+	return( strcasecmp( m_LocalForm.get(), LocalForm));
 }
 
 int XML_xerces_String::compareNoCase( const XMLCh* XMLForm)

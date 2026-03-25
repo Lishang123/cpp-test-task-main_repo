@@ -8,6 +8,7 @@
 #include <xercesc/util/TransService.hpp>
 #include <xercesc/util/XMLString.hpp>
 #include <string_view>
+#include <Misc/Memory.hpp>
 
 
 class XML_xerces_String
@@ -16,13 +17,13 @@ class XML_xerces_String
 		xercesc::XMLTranscoder* m_Transcoder;
 
 		XMLCh* m_XMLForm;
-		char* m_LocalForm;
+		M::Memory::unique_ptr<char[]> m_LocalForm;
 
 	public:
 		XML_xerces_String();
 		explicit XML_xerces_String( std::string_view localForm );
 		explicit XML_xerces_String( const XMLCh* XMLForm );
-
+		// prevent double free/ double delete problem for shallow copying in generated copy constructor
 		XML_xerces_String(XML_xerces_String const&) = delete;
 		XML_xerces_String(XML_xerces_String&& other) noexcept;
 
