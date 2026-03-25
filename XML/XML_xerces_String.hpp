@@ -22,7 +22,7 @@ namespace
 class XML_xerces_String
 {
 	private:
-		xercesc::XMLTranscoder* m_Transcoder;
+		std::unique_ptr<xercesc::XMLTranscoder> m_Transcoder;
 
 		transcoded_ptr<XMLCh> m_XMLForm;
 		M::Memory::unique_ptr<char[]> m_LocalForm;
@@ -33,12 +33,12 @@ class XML_xerces_String
 		explicit XML_xerces_String( const XMLCh* XMLForm );
 		// prevent double free/ double delete problem for shallow copying in generated copy constructor
 		XML_xerces_String(XML_xerces_String const&) = delete;
-		XML_xerces_String(XML_xerces_String&& other) noexcept;
+		XML_xerces_String(XML_xerces_String&& other) noexcept = default;
 
 		XML_xerces_String& operator=(XML_xerces_String const&) = delete;
-		XML_xerces_String& operator=(XML_xerces_String&& other) noexcept;
+		XML_xerces_String& operator=(XML_xerces_String&& other) noexcept = default;
 
-		virtual ~XML_xerces_String();
+		virtual ~XML_xerces_String() = default;
 
 		/** Set local form.
 		  * @param localForm The string in local form.

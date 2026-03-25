@@ -9,70 +9,36 @@
 #include "../Misc/Memory.hpp"
 
 XML_xerces_String::XML_xerces_String()
-                 : m_Transcoder(nullptr)
 {
 
 	// If we have an input of more than 64k, this might fail badly.
 	xercesc::XMLTransService::Codes Result;
 
-	m_Transcoder =
-		xercesc::XMLPlatformUtils::fgTransService->makeNewTranscoderFor( "utf-8", Result, 64 * 1024,
-		                                                                 xercesc::XMLPlatformUtils::fgMemoryManager);
+	m_Transcoder.reset(xercesc::XMLPlatformUtils::fgTransService->makeNewTranscoderFor( "utf-8", Result, 64 * 1024,
+		                                                                 xercesc::XMLPlatformUtils::fgMemoryManager));
 }
 
 XML_xerces_String::XML_xerces_String( std::string_view localForm )
-                 : m_Transcoder( nullptr)
 {
 
 	// If we have an input of more than 64k, this might fail badly.
 	xercesc::XMLTransService::Codes result {};
 
-	m_Transcoder =
-		xercesc::XMLPlatformUtils::fgTransService->makeNewTranscoderFor( "utf-8", result, 64 * 1024,
-		                                                                 xercesc::XMLPlatformUtils::fgMemoryManager);
+	m_Transcoder.reset(xercesc::XMLPlatformUtils::fgTransService->makeNewTranscoderFor( "utf-8", result, 64 * 1024,
+		                                                                 xercesc::XMLPlatformUtils::fgMemoryManager));
 
 	m_LocalForm = M::Memory::duplicateUniqueArray( localForm.data(), localForm.size());
 }
 
 XML_xerces_String::XML_xerces_String( const XMLCh* String)
-                 : m_Transcoder( nullptr)
 {
 	// If we have an input of more than 64k, this might fail badly.
 	xercesc::XMLTransService::Codes Result;
 
-	m_Transcoder =
-		xercesc::XMLPlatformUtils::fgTransService->makeNewTranscoderFor( "utf-8", Result, 64 * 1024,
-		                                                                 xercesc::XMLPlatformUtils::fgMemoryManager);
+	m_Transcoder.reset(xercesc::XMLPlatformUtils::fgTransService->makeNewTranscoderFor( "utf-8", Result, 64 * 1024,
+		                                                                 xercesc::XMLPlatformUtils::fgMemoryManager));
 
 	m_XMLForm.reset(xercesc::XMLString::replicate( String));
-}
-
-XML_xerces_String::XML_xerces_String(XML_xerces_String &&other) noexcept
-: m_Transcoder( other.m_Transcoder), m_XMLForm( std::move(other.m_XMLForm)), m_LocalForm( std::move(other.m_LocalForm))
-{
-	other.m_Transcoder = nullptr;
-}
-
-XML_xerces_String & XML_xerces_String::operator=(XML_xerces_String &&other) noexcept {
-	if( this == &other) {
-		return(*this);
-	}
-	// release old memory
-	delete m_Transcoder;
-
-	// steal other's resources
-	m_XMLForm = std::move(other.m_XMLForm);
-	m_LocalForm = std::move(other.m_LocalForm);
-	m_Transcoder = other.m_Transcoder;
-
-	// remove other's pointers
-	other.m_Transcoder = nullptr;
-	return(*this);
-}
-
-XML_xerces_String::~XML_xerces_String()
-{
-	delete m_Transcoder;
 }
 
 void XML_xerces_String::setLocalForm( std::string_view localForm)
