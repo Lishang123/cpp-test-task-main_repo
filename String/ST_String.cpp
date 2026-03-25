@@ -135,7 +135,7 @@ void ST_String::set( const char* s, size_t len)
 		return;
 	}
 	// Allocate new memory otherwise
-	consume( duplicate(s, len));
+	m_String = duplicateUniqueArray(s, len);
 }
 
 
