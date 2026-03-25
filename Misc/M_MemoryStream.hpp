@@ -9,14 +9,14 @@
 #include "M_SystemMessage.hpp"
 #include <string>
 #include <deque>
-#include <variant>
 
+#include "Memory.hpp"
 
 
 class M_MemoryStreamFragment
 {
 	private:
-		char*		m_Data;
+		M::Memory::unique_ptr<char[]>	m_Data;
 		T_uint64	m_UsedSize;
 		T_uint64	m_FreeSize;
 

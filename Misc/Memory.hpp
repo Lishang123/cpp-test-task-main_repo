@@ -107,6 +107,49 @@ namespace M::Memory
       */
      void installOutOfMemoryHandler();
 
+	template<class T>
+	unique_ptr<T> allocateUnique()
+	{
+		return as_unique_ptr(static_cast<T*>(allocate(sizeof(T))));
+	}
+
+	template<class T>
+	unique_ptr<T[]> allocateUniqueArray(size_t count)
+	{
+		return as_unique_array_ptr(static_cast<T*>(allocate(sizeof(T) * count)));
+	}
+
+	template<class T>
+	unique_ptr<T[]> callocateUniqueArray(size_t count)
+	{
+		return as_unique_array_ptr(static_cast<T*>(callocate(sizeof(T), count)));
+	}
+
+	template<class T>
+	unique_ptr<T[]> duplicateUniqueArray(const T* src, size_t count)
+	{
+		return as_unique_array_ptr(static_cast<T*>(duplicate(src, sizeof(T) * count)));
+	}
+
+	inline unique_ptr<char[]> duplicateUniqueString(const char* buffer, size_t size)
+	{
+		return as_unique_array_ptr(duplicate(buffer, size));
+	}
+
+	template<class T>
+	unique_ptr<T[]> reAllocateUniqueArray(unique_ptr<T[]>&& ptr, size_t newCount)
+	{
+		T* raw = ptr.release();
+		raw = static_cast<T*>(reAllocate(raw, sizeof(T) * newCount));
+		return as_unique_array_ptr(raw);
+	}
+
+	inline unique_ptr<char[]> createUnique(size_t length)
+	{
+		auto result = allocateUniqueArray<char>(length + 1);
+		result[0] = '\0';
+		return result;
+	}
 } // namespace M::Memory
 
 
