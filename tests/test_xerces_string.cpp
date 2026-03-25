@@ -1,21 +1,7 @@
 #include "../XML/XML_xerces_String.hpp"
-
+#include "XercesGuard.hpp"
 #include <catch2/catch_test_macros.hpp>
 #include <string_view>
-
-
-// Initialize Xerces
-struct XercesGuard {
-    XercesGuard() { xercesc::XMLPlatformUtils::Initialize(); }
-    ~XercesGuard() { xercesc::XMLPlatformUtils::Terminate(); }
-};
-
-/**
- * Ensure xerces is initialized for the tests.
- */
-static void ensure_xerces() {
-    static XercesGuard guard{};
-}
 
 
 TEST_CASE("XML_xerces_String: Default constructor with empty string", "[xml][xml-xerces-string]")
